@@ -1,0 +1,33 @@
+<html>
+	<head>
+		<title></title>
+	</head>
+	<body>
+    <table border="1">
+        <tr>
+            <td>ID</td>
+            <td>Name</td>
+            <td>Status</td>
+            <td>Priority</td>
+            <td>Rank</td>
+            <td>Assigned To</td>
+            <td>History</td>
+            <td>Item Link</td>
+        </tr>
+
+        @foreach (var item in @Model)
+        {
+            <tr class="bug-data">
+                <td class="id">@item.Id</td>
+                <td class="name">@item.Name</td>
+                <td class="status">@item.Status</td>
+                <td class="priority">@item.Priority</td>
+                <td class="rank">@item.Rank</td>
+                <td class="assignedTo">@LinkFromEntity(item.AssignedTo, "assignedTo")</td>
+                <td>@LinkFromEntity("history", item, "history")</td>
+                <td>@LinkFromEntity(item, "self")</td>
+            </tr>
+        }
+    </table>
+    </body>
+</html>

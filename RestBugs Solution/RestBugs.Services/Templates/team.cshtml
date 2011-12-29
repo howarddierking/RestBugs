@@ -1,0 +1,16 @@
+<html>
+	<head>
+		<title></title>
+	</head>
+	<body>
+        <h1>The Team</h1>
+        @foreach (var item in Model)
+        {
+            <div class="team-data">
+                <div class="id">@item.Id</div>
+                <div class="name">@item.Name</div>
+                <div>@LinkFromEntity("bugs", item, "bugs")</div>
+            </div>
+        }
+    </body>
+</html>

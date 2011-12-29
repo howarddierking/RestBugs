@@ -1,0 +1,70 @@
+﻿Baseline user stories:
+
+** as a developer, I want to see all triaged/approved bugs in order of importance (priority) so that I can choose the most important work to do next
+as a developer, I want to assign a bug to myself so that I can work on it
+** as a developer, I want to see all active bugs that I've assigned to myself so that I can track and update status on them
+as a developer, I want to update the status of a bug so that I can keep track of problems/fixes
+as a developer, I want to upload files and associate them with a bug so that I can capture things like screen shots, repro projects, etc.
+as a developer, I want to resolve a bug (and supply rationale)
+** as a tester, I want to see all resolved bugs so that I can choose what to work on next
+as a tester, I want to assign a resolved bug to myself so that I can work on it
+** as a tester I want to see all the bugs that I've assigned to myself so that I can track and update status on them
+as a tester, I want to update the status of a bug so that I can keep track of problems/fixes
+as a tester, I want to upload files and associate them with a bug so that I can capture things like screen shots, repro projects, etc.
+as a tester, I want to close a bug that I have verified as fixed
+** as a tester, I want to reactivate a bug that I think is still broken
+** as a project team member, I want to create a new bug
+** as a sprint planner, I want to see all pending bugs so that i can triage them and let the development team know what to work on next
+** as a sprint planner, I want to activate a pending bug so that the development knows that it's avaiable for work
+as a sprint planner, I want to close a bug that we're not going to work on
+** as a team member, I want to reassign a bug to another team member so that she can work on it
+
+Resources: 
+
+Team - GET | POST
+Team/{Team member}/Bugs - GET | POST
+Bugs/Active - GET | POST
+Bugs/Resolved - GET | POST
+Bugs/Closed - GET | POST
+Bugs/Pending - GET | POST (adding new bug posts here)
+Bug/{Bug} - GET | PUT | DELETE
+Bug/{Bug}/Attachments - GET | POST | DELETE
+Bug/{Bug}/History - GET
+
+Bug Type Specification:
+
+content type (GET): XHTML
+content type (PUT/POST): form-url encoded
+
+XHTML semantics
+<div class="bug-data">
+	<div class="status"></div>
+	<div class="priority"></div>
+	<div class="rank"></div>
+	<div class="id"></div>
+	<a href="" rel="assignedTo"></a>
+	<a href="" rel="history"></a>
+	</form>
+</div>
+
+media relations:
+history
+attachments
+assignedTo
+self
+bugs
+team
+
+areas of friction:
+when trying to run, I immediately got the following error: "The HttpOperationHandlerFactory is unable to determine the input parameter that should be associated with the request message content for service operation 'PostActive'. If the operation does not expect content in the request message use the HTTP GET method with the operation. Otherwise, ensure that one input parameter either has it's IsContentParameter property set to 'True' or is a type that is assignable to one of the following: HttpContent, ObjectContent`1, HttpRequestMessage or HttpRequestMessage`1."
+the fact that i can't share configs between hosts just completely sucks and needs to be fixed
+
+
+todo: 
+home page
+add new bug - should show up in pending
+from pending list, activate the bug - should show up in active
+from pending list, delete the bug (will tackle the details page later
+from active list resolve - should show up in resolved list
+from resolved list, close - should show up in closed list
+

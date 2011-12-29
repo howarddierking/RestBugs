@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<title></title>
+	</head>
+	<body>
+        <div>
+            <h1>here's the various collections of bugs and team members</h1>
+            <ul>
+                <li>@LinkFromEntity("team", Model, "team")</li>
+                <li>@LinkFromEntity("activebugs", Model, "bugs")</li>
+                <li>@LinkFromEntity("resolvedbugs", Model, "bugs")</li>
+                <li>@LinkFromEntity("closedbugs", Model, "bugs")</li>
+                <li>@LinkFromEntity("pendingbugs", Model, "bugs")</li>      
+            </ul>
+        </div>
+        <div>
+            <h1>Add a new bug</h1>
+            <form class="newbug" action="bugs/pending" method="post">
+                Title <input name="name" type="text" /><br />
+                Priority <input name="priority" type="text" /><br />
+                Rank <input name="rank" type="text" /><br />
+                <input type="submit" value="Add Bug" />
+            </form>
+        </div>
+    </body>
+</html>

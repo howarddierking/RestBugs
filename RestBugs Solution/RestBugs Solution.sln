@@ -1,0 +1,63 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{E3552BDA-0A81-45C8-A4B5-9B53186A50B5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1D58AEC4-0707-4F73-8F02-8823578FC39D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestBugs.Services", "RestBugs.Services\RestBugs.Services.csproj", "{1FE6F881-2365-418C-AD5C-ED987F07F393}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestBugs.Services.Specs", "RestBugs.Services.Specs\RestBugs.Services.Specs.csproj", "{0777C6CB-7F07-4A09-BF0A-A7FF8028F48E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestBugs.ConsoleHost", "RestBugs.ConsoleHost\RestBugs.ConsoleHost.csproj", "{918F3150-2444-477C-86BD-4C35F0512261}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1FE6F881-2365-418C-AD5C-ED987F07F393}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FE6F881-2365-418C-AD5C-ED987F07F393}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FE6F881-2365-418C-AD5C-ED987F07F393}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1FE6F881-2365-418C-AD5C-ED987F07F393}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1FE6F881-2365-418C-AD5C-ED987F07F393}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1FE6F881-2365-418C-AD5C-ED987F07F393}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FE6F881-2365-418C-AD5C-ED987F07F393}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FE6F881-2365-418C-AD5C-ED987F07F393}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1FE6F881-2365-418C-AD5C-ED987F07F393}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1FE6F881-2365-418C-AD5C-ED987F07F393}.Release|x86.ActiveCfg = Release|Any CPU
+		{0777C6CB-7F07-4A09-BF0A-A7FF8028F48E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0777C6CB-7F07-4A09-BF0A-A7FF8028F48E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0777C6CB-7F07-4A09-BF0A-A7FF8028F48E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0777C6CB-7F07-4A09-BF0A-A7FF8028F48E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0777C6CB-7F07-4A09-BF0A-A7FF8028F48E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0777C6CB-7F07-4A09-BF0A-A7FF8028F48E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0777C6CB-7F07-4A09-BF0A-A7FF8028F48E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0777C6CB-7F07-4A09-BF0A-A7FF8028F48E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0777C6CB-7F07-4A09-BF0A-A7FF8028F48E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0777C6CB-7F07-4A09-BF0A-A7FF8028F48E}.Release|x86.ActiveCfg = Release|Any CPU
+		{918F3150-2444-477C-86BD-4C35F0512261}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{918F3150-2444-477C-86BD-4C35F0512261}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{918F3150-2444-477C-86BD-4C35F0512261}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{918F3150-2444-477C-86BD-4C35F0512261}.Debug|x86.ActiveCfg = Debug|x86
+		{918F3150-2444-477C-86BD-4C35F0512261}.Debug|x86.Build.0 = Debug|x86
+		{918F3150-2444-477C-86BD-4C35F0512261}.Release|Any CPU.ActiveCfg = Release|x86
+		{918F3150-2444-477C-86BD-4C35F0512261}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{918F3150-2444-477C-86BD-4C35F0512261}.Release|Mixed Platforms.Build.0 = Release|x86
+		{918F3150-2444-477C-86BD-4C35F0512261}.Release|x86.ActiveCfg = Release|x86
+		{918F3150-2444-477C-86BD-4C35F0512261}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1FE6F881-2365-418C-AD5C-ED987F07F393} = {E3552BDA-0A81-45C8-A4B5-9B53186A50B5}
+		{918F3150-2444-477C-86BD-4C35F0512261} = {E3552BDA-0A81-45C8-A4B5-9B53186A50B5}
+		{0777C6CB-7F07-4A09-BF0A-A7FF8028F48E} = {1D58AEC4-0707-4F73-8F02-8823578FC39D}
+	EndGlobalSection
+EndGlobal
