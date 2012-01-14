@@ -1,0 +1,9 @@
+changed all references and updated usings
+formatters
+	changed sync methods to async methods (e.g. OnWriteToStream -> OnWriteToStreamAsyc) and modified to use tasks
+	++ was able to delete the WriteXx method when it is not used
+	-- the formatter api is still crazy ugly
+		method signature is really long
+		i don't have a good sense of what happens if i don't just return a new task by default (e.g. what happens if i call base.OnXxX?)
+message handlers
+	++ hurray!  these haven't changed

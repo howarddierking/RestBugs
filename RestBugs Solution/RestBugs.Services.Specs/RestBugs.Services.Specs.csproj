@@ -35,14 +35,7 @@
     <Reference Include="Machine.Specifications">
       <HintPath>..\packages\Machine.Specifications.0.4.24.0\lib\Machine.Specifications.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ApplicationServer.Http">
-      <HintPath>..\packages\WebApi.Server.0.5.0\lib\40-Full\Microsoft.ApplicationServer.Http.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Json, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Net.Http">
-      <HintPath>..\packages\HttpClient.0.5.0\lib\40\Microsoft.Net.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Net.Http.Formatting, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>

@@ -31,43 +31,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.ApplicationServer.Http">
-      <HintPath>..\packages\WebApi.Server.0.5.0\lib\40-Full\Microsoft.ApplicationServer.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ApplicationServer.HttpEnhancements">
-      <HintPath>..\packages\WebApi.Server.Enhancements.0.5.0\lib\40-Full\Microsoft.ApplicationServer.HttpEnhancements.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Json">
-      <HintPath>..\packages\WebApi.Server.0.5.0\lib\40-Full\Microsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Net.Http">
-      <HintPath>..\packages\HttpClient.0.5.0\lib\40\Microsoft.Net.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Net.Http.Formatting">
-      <HintPath>..\packages\HttpClient.0.5.0\lib\40\Microsoft.Net.Http.Formatting.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Pex.Framework, Version=0.94.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Runtime.Serialization.Internal">
-      <HintPath>..\packages\WebApi.Server.0.5.0\lib\40-Full\Microsoft.Runtime.Serialization.Internal.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Server.Common">
-      <HintPath>..\packages\WebApi.Server.0.5.0\lib\40-Full\Microsoft.Server.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ServiceModel.Internal">
-      <HintPath>..\packages\WebApi.Server.0.5.0\lib\40-Full\Microsoft.ServiceModel.Internal.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Activation" />
-    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Net.Http">
+      <HintPath>..\..\..\..\..\WPT\WebStackRuntime\Runtime\external\System.Net.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Razor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -99,7 +72,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <Content Include="Templates\SystemDescription.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -116,7 +88,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\WPT\WebStackRuntime\Runtime\src\System.Net.Http.Formatting\System.Net.Http.Formatting.csproj">
+      <Project>{668E9021-CE84-49D9-98FB-DF125A9FCDB0}</Project>
+      <Name>System.Net.Http.Formatting</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

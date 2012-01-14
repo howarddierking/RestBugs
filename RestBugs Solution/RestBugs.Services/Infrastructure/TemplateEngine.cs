@@ -14,22 +14,22 @@ namespace RestBugs.Services.Infrastructure
     /// </summary>
     public class TemplateEngine
     {
-        private static readonly RazorTemplateEngine _engine = InitializeTemplateEngine();
-        private static readonly Dictionary<string, Type> modelTemplateTypeCache = new Dictionary<string, Type>();
-        private static readonly object cacheLock = new object();
+        private static readonly RazorTemplateEngine Engine = InitializeTemplateEngine();
+        private static readonly Dictionary<string, Type> ModelTemplateTypeCache = new Dictionary<string, Type>();
+        private static readonly object CacheLock = new object();
         
         public TemplateBase CreateTemplateForType(Type modelType, string templateFile = null)
         {
             Type templateType;
             var templateKey = templateFile ?? modelType.Name;
-            if (!modelTemplateTypeCache.TryGetValue(templateKey, out templateType))
+            if (!ModelTemplateTypeCache.TryGetValue(templateKey, out templateType))
             {
-                lock (cacheLock)
+                lock (CacheLock)
                 {
-                    if (!modelTemplateTypeCache.TryGetValue(templateKey, out templateType))
+                    if (!ModelTemplateTypeCache.TryGetValue(templateKey, out templateType))
                     {
                         templateType = InitializeTemplateType(templateKey);
-                        modelTemplateTypeCache.Add(templateKey, templateType);
+                        ModelTemplateTypeCache.Add(templateKey, templateType);
                     }
                 }
             }
@@ -46,7 +46,7 @@ namespace RestBugs.Services.Infrastructure
             var templateText = File.ReadAllText(Path.Combine(baseDirectory, fileName));
             using (TextReader rdr = new StringReader(templateText))
             {
-                razorResult = _engine.GenerateCode(rdr);
+                razorResult = Engine.GenerateCode(rdr);
             }
 
             var codeProvider = new CSharpCodeProvider();
