@@ -1,20 +1,19 @@
 ﻿using System;
-using System.ServiceModel;
-using System.ServiceModel.Web;
+
 using RestBugs.Services.Model;
 
 namespace RestBugs.Services.Services
 {
-    [ServiceContract]
-    public class HomeService
+    using System.Web.Http;
+
+    public class HomeController : ApiController
     {
         IBugRepository _bugRepository;
 
-        public HomeService(IBugRepository bugRepository) {
+        public HomeController(IBugRepository bugRepository) {
             _bugRepository = bugRepository;
         }
 
-        [WebGet(UriTemplate = "")]
         public SystemDescription Index() {
             return new SystemDescription();
         }

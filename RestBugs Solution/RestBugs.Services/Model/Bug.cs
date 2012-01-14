@@ -39,8 +39,7 @@ namespace RestBugs.Services.Model
             var now = DateTime.Now;
             _history.Add(new Tuple<DateTime, List<Tuple<string, string>>, string>(
                              now,
-                             new List<Tuple<string, string>>()
-                             {
+                             new List<Tuple<string, string>> {
                                  new Tuple<string, string>("Assigned To", teamMember.Name)
                              }, comments));
             AssignedTo = teamMember;

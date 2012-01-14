@@ -4,7 +4,6 @@ using System.Json;
 using System.Linq;
 using System.Net;
 using Machine.Specifications;
-using Microsoft.ApplicationServer.Http.Dispatcher;
 using Moq;
 using RestBugs.Services.Model;
 using RestBugs.Services.Services;
@@ -12,6 +11,8 @@ using It = Machine.Specifications.It;
 
 namespace RestBugs.Services.Specs
 {
+    using System.Web.Http;
+
     public class when_posting_bug_to_team_member
     {
         Establish context = () =>
@@ -26,7 +27,7 @@ namespace RestBugs.Services.Specs
             var mockTeamRepository = new Mock<ITeamRepository>();
             mockTeamRepository.Setup(r => r.Get(1)).Returns(teamMember);
 
-            service = new TeamService(mockBugRepository.Object, mockTeamRepository.Object);
+            controller = new TeamController(mockBugRepository.Object, mockTeamRepository.Object);
         };
 
         Because of = () => {
@@ -36,7 +37,7 @@ namespace RestBugs.Services.Specs
             data["teamMemberId"] = 1;
             data["comments"] = "my sample comments";
 
-            result = service.PostBugToTeamMember(data).Content.ReadAs(); 
+            result = controller.PostBugToTeamMember(data).Content.ReadAsync().Result; 
         };
 
         It should_be_in_the_team_members_list = () => result.ShouldContain(testBug);
@@ -53,7 +54,7 @@ namespace RestBugs.Services.Specs
 
         static IEnumerable<Bug> result;
         static TeamMember teamMember;
-        static TeamService service;
+        static TeamController controller;
         static Bug testBug;
     }
 
@@ -67,7 +68,7 @@ namespace RestBugs.Services.Specs
             var mockTeamRepository = new Mock<ITeamRepository>();
             mockTeamRepository.Setup(r => r.Get(1)).Returns(null as TeamMember);
 
-            service = new TeamService(mockBugRepository.Object, mockTeamRepository.Object);
+            controller = new TeamController(mockBugRepository.Object, mockTeamRepository.Object);
         };
 
         Because of = () => {
@@ -76,7 +77,7 @@ namespace RestBugs.Services.Specs
             data["teamMemberId"] = 1;
             data["comments"] = null;
 
-            Exception = Catch.Exception(() => service.PostBugToTeamMember(data));
+            Exception = Catch.Exception(() => controller.PostBugToTeamMember(data));
         };
 
         It should_fail = () => Exception.ShouldNotBeNull();
@@ -86,7 +87,7 @@ namespace RestBugs.Services.Specs
         It should_fail_with_404_status_code = () => ((HttpResponseException)Exception).Response.StatusCode.ShouldEqual(HttpStatusCode.NotFound);
 
         static Exception Exception;
-        static TeamService service;
+        static TeamController controller;
     }
 
     public class when_posting_inactive_bug_to_team_member
@@ -99,7 +100,7 @@ namespace RestBugs.Services.Specs
             var mockTeamRepository = new Mock<ITeamRepository>();
             mockTeamRepository.Setup(r => r.Get(1)).Returns(new TeamMember { Id = 1, Name = "Howard Dierking" });
 
-            service = new TeamService(mockBugRepository.Object, mockTeamRepository.Object);
+            controller = new TeamController(mockBugRepository.Object, mockTeamRepository.Object);
         };
 
         Because of = () => {
@@ -108,7 +109,7 @@ namespace RestBugs.Services.Specs
             data["teamMemberId"] = 1;
             data["comments"] = null;
             
-            Exception = Catch.Exception(() => service.PostBugToTeamMember(data));
+            Exception = Catch.Exception(() => controller.PostBugToTeamMember(data));
         };
 
         It should_fail = () => Exception.ShouldNotBeNull();
@@ -117,11 +118,11 @@ namespace RestBugs.Services.Specs
 
         It should_fail_with_400_status_code = () => ((HttpResponseException)Exception).Response.StatusCode.ShouldEqual(HttpStatusCode.BadRequest);
 
-        It should_fail_with_message = () => ((HttpResponseException)Exception).Response.Content.ReadAsString().ShouldEqual(
+        It should_fail_with_message = () => ((HttpResponseException)Exception).Response.Content.ReadAsStringAsync().Result.ShouldEqual(
             "Cannot assign an inactive bug.");
 
         static Exception Exception;
-        static TeamService service;
+        static TeamController controller;
     }
 
     public class when_posting_non_existant_bug_to_team_member
@@ -134,7 +135,7 @@ namespace RestBugs.Services.Specs
             var mockTeamRepository = new Mock<ITeamRepository>();
             mockTeamRepository.Setup(r => r.Get(1)).Returns(new TeamMember { Id = 1, Name = "Howard Dierking" });
 
-            service = new TeamService(mockBugRepository.Object, mockTeamRepository.Object);
+            controller = new TeamController(mockBugRepository.Object, mockTeamRepository.Object);
         };
 
         Because of = () => {
@@ -143,7 +144,7 @@ namespace RestBugs.Services.Specs
             data.teamMemberId = 1;
             data.comments = null;
 
-            Exception = Catch.Exception(() => service.PostBugToTeamMember(data));
+            Exception = Catch.Exception(() => controller.PostBugToTeamMember(data));
         };
 
         It should_fail = () => Exception.ShouldNotBeNull();
@@ -152,11 +153,11 @@ namespace RestBugs.Services.Specs
 
         It should_fail_with_400_status_code = () => ((HttpResponseException)Exception).Response.StatusCode.ShouldEqual(HttpStatusCode.BadRequest);
 
-        It should_fail_with_message = () => ((HttpResponseException)Exception).Response.Content.ReadAsString().ShouldEqual(
+        It should_fail_with_message = () => ((HttpResponseException)Exception).Response.Content.ReadAsStringAsync().Result.ShouldEqual(
             "Specified bug does not exist.");
 
         static Exception Exception;
-        static TeamService service;
+        static TeamController controller;
     }
 
     public class when_getting_team_member_bugs
@@ -166,14 +167,14 @@ namespace RestBugs.Services.Specs
             var mockBugRepository = new Mock<IBugRepository>();
             mockBugRepository.Setup(r => r.GetAll()).Returns(BugHelper.TestBugList);
 
-            service = new TeamService(mockBugRepository.Object, new Mock<ITeamRepository>().Object);
+            controller = new TeamController(mockBugRepository.Object, new Mock<ITeamRepository>().Object);
         };
 
-        Because of = () => { bugs = service.GetTeamMemberActiveBugs(1).Content.ReadAs(); };
+        Because of = () => { bugs = controller.GetTeamMemberActiveBugs(1).Content.ReadAsync().Result; };
 
         It should_return_2_bugs = () => bugs.Count().ShouldEqual(2);
 
         static IEnumerable<Bug> bugs;
-        static TeamService service;
+        static TeamController controller;
     }
 }

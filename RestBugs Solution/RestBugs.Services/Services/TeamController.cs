@@ -1,27 +1,25 @@
 ﻿using System.Collections.Generic;
-using System.Json;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.ServiceModel;
-using System.ServiceModel.Web;
-using Microsoft.ApplicationServer.Http.Dispatcher;
+
 using RestBugs.Services.Model;
 
 namespace RestBugs.Services.Services
 {
-    [ServiceContract]
-    public class TeamService
+    using System.Json;
+    using System.Web.Http;
+
+    public class TeamController : ApiController
     {
         readonly IBugRepository _bugRepository;
         readonly ITeamRepository _teamRepository;
 
-        public TeamService(IBugRepository bugRepository, ITeamRepository teamRepository) {
+        public TeamController(IBugRepository bugRepository, ITeamRepository teamRepository) {
             _bugRepository = bugRepository;
             _teamRepository = teamRepository;
         }
 
-        [WebGet(UriTemplate = "")]
         public HttpResponseMessage<IEnumerable<TeamMember>> GetTeam() {
             var response =  new HttpResponseMessage<IEnumerable<TeamMember>>(_teamRepository.GetAll());
 
@@ -29,7 +27,6 @@ namespace RestBugs.Services.Services
             return response;
         }
 
-        [WebGet(UriTemplate = "{teamMemberId}/bugs")]
         public HttpResponseMessage<IEnumerable<Bug>> GetTeamMemberActiveBugs(int teamMemberId) {
             var response =
                 new HttpResponseMessage<IEnumerable<Bug>>(
@@ -40,7 +37,6 @@ namespace RestBugs.Services.Services
             return response;
         }
 
-        [WebInvoke(UriTemplate = "{teamMemberId}/bugs", Method = "POST")]
         public HttpResponseMessage<IEnumerable<Bug>> PostBugToTeamMember(JsonObject requestData) {
             var bugId = requestData["bugId"].ReadAs<int>();
             var teamMemberId = requestData["teamMemberId"].ReadAs<int>();

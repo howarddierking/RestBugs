@@ -64,9 +64,9 @@
     <Compile Include="Model\StaticTeamRepository.cs" />
     <Compile Include="Model\TeamMember.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\BugsService.cs" />
-    <Compile Include="Services\HomeService.cs" />
-    <Compile Include="Services\TeamService.cs" />
+    <Compile Include="Services\BugsController.cs" />
+    <Compile Include="Services\HomeController.cs" />
+    <Compile Include="Services\TeamController.cs" />
     <Content Include="Templates\bugs.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -89,9 +89,17 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\WPT\WebStackRuntime\Runtime\src\System.Json\System.Json.csproj">
+      <Project>{F0441BE9-BDC0-4629-BE5A-8765FFAA2481}</Project>
+      <Name>System.Json</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\WPT\WebStackRuntime\Runtime\src\System.Net.Http.Formatting\System.Net.Http.Formatting.csproj">
       <Project>{668E9021-CE84-49D9-98FB-DF125A9FCDB0}</Project>
       <Name>System.Net.Http.Formatting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\WPT\WebStackRuntime\Runtime\src\System.Web.Http\System.Web.Http.csproj">
+      <Project>{DDC1CE0C-486E-4E35-BB3B-EAB61F8F9440}</Project>
+      <Name>System.Web.Http</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

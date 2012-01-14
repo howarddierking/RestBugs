@@ -1,27 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Json;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.ServiceModel;
-using System.ServiceModel.Web;
-using Microsoft.ApplicationServer.Http.Dispatcher;
 using RestBugs.Services.Infrastructure;
 using RestBugs.Services.Model;
 
 namespace RestBugs.Services.Services
 {
-    [ServiceContract]
-    public class BugsService
+    using System.Json;
+    using System.Web.Http;
+
+    public class BugsController : ApiController
     {
         readonly IBugRepository _bugRepository;
 
-        public BugsService(IBugRepository bugRepository) {
+        public BugsController(IBugRepository bugRepository) {
             _bugRepository = bugRepository;
         }
 
-        [WebGet(UriTemplate = "active")]
         public HttpResponseMessage<IEnumerable<Bug>> GetActive() {
 
             var response = new HttpResponseMessage<IEnumerable<Bug>>(
@@ -35,7 +32,6 @@ namespace RestBugs.Services.Services
             return response;
         }
 
-        [WebGet(UriTemplate = "resolved")]
         public HttpResponseMessage<IEnumerable<Bug>> GetResolved() {
             var response = new HttpResponseMessage<IEnumerable<Bug>>(
                 _bugRepository.GetAll().Where(
@@ -48,7 +44,6 @@ namespace RestBugs.Services.Services
             return response;
         }
 
-        [WebGet(UriTemplate = "pending")]
         public HttpResponseMessage<IEnumerable<Bug>> GetPending()
         {
             var response = new HttpResponseMessage<IEnumerable<Bug>>(
@@ -62,7 +57,6 @@ namespace RestBugs.Services.Services
             return response;
         }
 
-        [WebGet(UriTemplate = "closed")]
         public HttpResponseMessage<IEnumerable<Bug>> GetClosed()
         {
             var response = new HttpResponseMessage<IEnumerable<Bug>>(
@@ -76,9 +70,8 @@ namespace RestBugs.Services.Services
             return response;
         }
 
-        [WebInvoke(UriTemplate = "pending", Method="POST")]
         public HttpResponseMessage<IEnumerable<Bug>> PostPending(HttpRequestMessage<JsonObject> requestMessage) {
-            dynamic formData = requestMessage.Content.ReadAs();
+            dynamic formData = requestMessage.Content.ReadAsync().Result;
             var bug = new Bug
             {
                 Name = formData.name,
@@ -100,7 +93,6 @@ namespace RestBugs.Services.Services
             return response;
         }
 
-        [WebInvoke(UriTemplate = "active", Method = "POST")]
         public HttpResponseMessage<IEnumerable<Bug>> PostActive(JsonObject content) {
             dynamic cnt = content;
             int bugId = cnt.id;
@@ -123,7 +115,6 @@ namespace RestBugs.Services.Services
             return response;
         }
 
-        [WebInvoke(UriTemplate = "resolved", Method = "POST")]
         public HttpResponseMessage<IEnumerable<Bug>> PostResolved(JsonObject content)
         {
             dynamic cnt = content;
@@ -147,7 +138,6 @@ namespace RestBugs.Services.Services
             return response;
         }
 
-        [WebInvoke(UriTemplate = "closed", Method = "POST")]
         public HttpResponseMessage<IEnumerable<Bug>> PostClosed(JsonObject content)
         {
             dynamic cnt = content;

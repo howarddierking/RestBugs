@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Json;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
+
 using Machine.Specifications;
-using Microsoft.ApplicationServer.Http.Dispatcher;
+
 using Moq;
 using RestBugs.Services.Model;
 using RestBugs.Services.Services;
@@ -13,13 +13,16 @@ using It = Machine.Specifications.It;
 
 namespace RestBugs.Services.Specs
 {
+    using System.Net.Http;
+    using System.Web.Http;
+
     public class when_getting_all_active_bugs
     {
         Establish context = () =>
         {
             var mockRepo = new Mock<IBugRepository>();
             mockRepo.Setup(r => r.GetAll()).Returns(BugHelper.TestBugList);
-            service = new BugsService(mockRepo.Object);
+            controller = new BugsController(mockRepo.Object);
 
             expectedResult = new List<Bug>
             {
@@ -29,7 +32,7 @@ namespace RestBugs.Services.Specs
             };
         };
 
-        Because of = () => { approvedBugs = service.GetActive().Content.ReadAs(); };
+        Because of = () => { approvedBugs = controller.GetActive().Content.ReadAsync().Result; };
 
         It should_not_be_null = () => approvedBugs.ShouldNotBeNull();
 
@@ -38,7 +41,7 @@ namespace RestBugs.Services.Specs
         It should_sort_bugs_in_order_of_priority_then_rank = () => approvedBugs.SequenceEqual(expectedResult);
 
         static IEnumerable<Bug> approvedBugs;
-        static BugsService service;
+        static BugsController controller;
         static IEnumerable<Bug> expectedResult;
     }
 
@@ -48,17 +51,17 @@ namespace RestBugs.Services.Specs
         {
             var mockRepo = new Mock<IBugRepository>();
             mockRepo.Setup(r => r.GetAll()).Returns(BugHelper.TestBugList);
-            service = new BugsService(mockRepo.Object);
+            controller = new BugsController(mockRepo.Object);
         };
 
-        Because of = () => { resolvedBugs = service.GetResolved().Content.ReadAs(); };
+        Because of = () => { resolvedBugs = controller.GetResolved().Content.ReadAsync().Result; };
 
         It should_not_be_null = () => resolvedBugs.ShouldNotBeNull();
 
         It should_return_1_bug = () => resolvedBugs.Count().ShouldEqual(1);
 
         static IEnumerable<Bug> resolvedBugs;
-        static BugsService service;
+        static BugsController controller;
     }
 
     public class when_getting_all_closed_bugs
@@ -67,17 +70,17 @@ namespace RestBugs.Services.Specs
         {
             var mockRepo = new Mock<IBugRepository>();
             mockRepo.Setup(r => r.GetAll()).Returns(BugHelper.TestBugList);
-            service = new BugsService(mockRepo.Object);
+            controller = new BugsController(mockRepo.Object);
         };
 
-        Because of = () => { resolvedBugs = service.GetClosed().Content.ReadAs(); };
+        Because of = () => { resolvedBugs = controller.GetClosed().Content.ReadAsync().Result; };
 
         It should_not_be_null = () => resolvedBugs.ShouldNotBeNull();
 
         It should_return_1_bug = () => resolvedBugs.Count().ShouldEqual(1);
 
         static IEnumerable<Bug> resolvedBugs;
-        static BugsService service;
+        static BugsController controller;
     }
 
     public class when_posting_bug_to_active
@@ -88,7 +91,7 @@ namespace RestBugs.Services.Specs
             mockRepo.Setup(r => r.Get(1)).Returns(testBug);
             mockRepo.Setup(r=>r.GetAll()).Returns(new[]{testBug});
 
-            service = new BugsService(mockRepo.Object);
+            controller = new BugsController(mockRepo.Object);
         };
 
         Because of = () => {
@@ -96,8 +99,8 @@ namespace RestBugs.Services.Specs
             data.Add("id", 1);
             data.Add("comments", "activating bug 1");
 
-            result = service.PostActive(data);
-            resultContent = result.Content.ReadAs();
+            result = controller.PostActive(data);
+            resultContent = result.Content.ReadAsync().Result;
         };
 
         It should_not_be_null = () => result.ShouldNotBeNull();
@@ -108,7 +111,7 @@ namespace RestBugs.Services.Specs
 
         It should_add_comment_to_history = () => resultContent.First().History.Count.ShouldEqual(2);
 
-        static BugsService service;
+        static BugsController controller;
         static HttpResponseMessage<IEnumerable<Bug>> result;
         static IEnumerable<Bug> resultContent;
     }
@@ -119,7 +122,7 @@ namespace RestBugs.Services.Specs
         {
             var mockRepo = new Mock<IBugRepository>();
             mockRepo.Setup(r => r.Get(100)).Returns(null as Bug);
-            service = new BugsService(mockRepo.Object);
+            controller = new BugsController(mockRepo.Object);
         };
 
         Because of = () => {
@@ -127,7 +130,7 @@ namespace RestBugs.Services.Specs
             data.id = 100;
             data.comments = "activating bug 1";
 
-            Exception = Catch.Exception(() => service.PostActive(data));
+            Exception = Catch.Exception(() => controller.PostActive(data));
         };
 
         It should_fail = () => Exception.ShouldNotBeNull();
@@ -136,7 +139,7 @@ namespace RestBugs.Services.Specs
 
         It should_throw_http_404 = () => ((HttpResponseException)Exception).Response.StatusCode.ShouldEqual(HttpStatusCode.NotFound);
 
-        static BugsService service;
+        static BugsController controller;
         static Exception Exception;
     }
 }
