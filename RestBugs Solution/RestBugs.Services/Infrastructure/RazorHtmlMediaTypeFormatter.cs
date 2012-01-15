@@ -16,31 +16,41 @@ namespace RestBugs.Services.Infrastructure
             SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
         }
 
+        //protected override void OnWriteToStream(Type type, object value, Stream stream, HttpContentHeaders contentHeaders, FormatterContext formatterContext, TransportContext transportContext)
+        //{
+        //    WriteStream(value, stream, contentHeaders);
+        //}
+
+        protected override bool CanWriteType(Type type) {
+            return true;
+        }
+
         protected override Task OnWriteToStreamAsync(Type type, object value, Stream stream, HttpContentHeaders contentHeaders, FormatterContext formatterContext, TransportContext transportContext)
         {
-            return Task.Factory.StartNew(() =>
-                                             {
-                                                 IEnumerable<string> headerValues;
-                                                 string razorTemplate = null;
+            return Task.Factory.StartNew(() => WriteStream(value, stream, contentHeaders));
+        }
 
-                                                 if (contentHeaders.TryGetValues("razortemplate", out headerValues))
-                                                     razorTemplate = headerValues.FirstOrDefault();
+        static void WriteStream(object value, Stream stream, HttpContentHeaders contentHeaders) {
+            IEnumerable<string> headerValues;
+            string razorTemplate = null;
 
-                                                 if (razorTemplate != null)
-                                                     contentHeaders.Remove("razortemplate");
+            if (contentHeaders.TryGetValues("razortemplate", out headerValues))
+                razorTemplate = headerValues.FirstOrDefault();
 
-                                                 var templateManager = new TemplateEngine();
-                                                 var currentTemplate = templateManager.CreateTemplateForType(value.GetType(), razorTemplate);
+            if (razorTemplate != null)
+                contentHeaders.Remove("razortemplate");
 
-                                                 // set the model for the template
-                                                 currentTemplate.Model = value;
-                                                 currentTemplate.Execute();
-                                                 using (var streamWriter = new StreamWriter(stream))
-                                                 {
-                                                     streamWriter.Write(currentTemplate.Buffer.ToString());
-                                                 }
-                                                 currentTemplate.Buffer.Clear();                                     
-                                             });
+            var templateManager = new TemplateEngine();
+            var currentTemplate = templateManager.CreateTemplateForType(value.GetType(), razorTemplate);
+
+            // set the model for the template
+            currentTemplate.Model = value;
+            currentTemplate.Execute();
+
+            using (var streamWriter = new StreamWriter(stream))
+                streamWriter.Write(currentTemplate.Buffer.ToString());
+
+            currentTemplate.Buffer.Clear();
         }
     }
 }

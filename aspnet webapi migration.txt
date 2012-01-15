@@ -7,3 +7,9 @@ formatters
 		i don't have a good sense of what happens if i don't just return a new task by default (e.g. what happens if i call base.OnXxX?)
 message handlers
 	++ hurray!  these haven't changed
+services
+	needed to change method names to HTTP Method conventions
+	needed to refactor child resources into different controllers
+
+hierarchies
+	need to figure out how i'm going to represent hierarchies for active/pending/etc.

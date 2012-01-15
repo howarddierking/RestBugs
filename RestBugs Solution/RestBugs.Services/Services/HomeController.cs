@@ -1,20 +1,12 @@
 ﻿using System;
 
-using RestBugs.Services.Model;
-
 namespace RestBugs.Services.Services
 {
     using System.Web.Http;
 
     public class HomeController : ApiController
     {
-        IBugRepository _bugRepository;
-
-        public HomeController(IBugRepository bugRepository) {
-            _bugRepository = bugRepository;
-        }
-
-        public SystemDescription Index() {
+        public SystemDescription Get() {
             return new SystemDescription();
         }
     }

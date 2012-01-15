@@ -4,22 +4,39 @@
     using System.Web.Http;
     using System.Web.Http.SelfHost;
     using Ninject;
-    using RestBugs.Services.Infrastructure;
-    using RestBugs.Services.MessageHandlers;
-    using RestBugs.Services.Model;
+    using Services.Infrastructure;
+    using Services.MessageHandlers;
+    using Services.Model;
 
     class Program
     {
         static void Main() {
             var config = new HttpSelfHostConfiguration(new Uri("http://localhost:8800/"));
-
+            
+            
             //config.Formatters.Add(new FormUrlEncodedMediaTypeFormatter());
             config.Formatters.Add(new RazorHtmlMediaTypeFormatter());
 
-            config.MessageHandlers.Add(new EtagMessageHandler());
-
+            //config.MessageHandlers.Add(new EtagMessageHandler());
             //config.IncludeExceptionDetail = true;
 
+            /*
+                / - GET
+                /Team - GET | POST
+                /Team/{Team member}/Bugs - GET | POST
+                /Bugs/Active - GET | POST
+                /Bugs/Resolved - GET | POST
+                /Bugs/Closed - GET | POST
+                /Bugs/Pending - GET | POST (adding new bug posts here)
+                /Bug/{Bug} - GET | PUT | DELETE
+                /Bug/{Bug}/Attachments - GET | POST | DELETE
+                /Bug/{Bug}/History - GET
+             */
+
+            config.Routes.MapHttpRoute("active", "bugs/active", new { controller = "BugsActive" });
+            config.Routes.MapHttpRoute("closed", "bugs/closed", new { controller = "BugsClosed" });
+            config.Routes.MapHttpRoute("pending", "bugs/pending", new { controller = "BugsPending" });
+            config.Routes.MapHttpRoute("resolved", "bugs/resolved", new { controller = "BugsResolved" });
             config.Routes.MapHttpRoute("default", "{controller}", new { controller = "Home" });
 
             var kernel = new StandardKernel();
@@ -36,21 +53,6 @@
             Console.ReadLine();
 
             host.CloseAsync().Wait();
-
-            //var homeServiceBaseAddress = new Uri(systemBaseAddress, "");
-            //var homeServiceHost = new HttpServiceHost(typeof(HomeController), GetConfig(), homeServiceBaseAddress);
-            //homeServiceHost.Open();
-            //Console.WriteLine("SystemServiceHost is open...");
-
-            //var bugServiceBaseAddress = new Uri(systemBaseAddress, "bugs");
-            //var bugServiceHost = new HttpServiceHost(typeof(BugsController), GetConfig(), bugServiceBaseAddress);
-            //bugServiceHost.Open();
-            //Console.WriteLine("BugServiceHost is open...");
-
-            //var teamServiceBaseAddress = new Uri(systemBaseAddress, "team");
-            //var teamServiceHost = new HttpServiceHost(typeof (TeamController), GetConfig(), teamServiceBaseAddress);
-            //teamServiceHost.Open();
-            //Console.WriteLine("TeamServiceHost is open...");
         }
     }
 }
