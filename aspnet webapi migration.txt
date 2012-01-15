@@ -7,3 +7,11 @@ formatters
 		i don't have a good sense of what happens if i don't just return a new task by default (e.g. what happens if i call base.OnXxX?)
 message handlers
 	++ hurray!  these haven't changed
+services
+	remove service contract and webget/webinvoke attributes
+	remove using statements
+	add reference to System.Web.Http
+	add reference to System.Json
+	rename XxService to XxController
+console host
+	had to completely rewrite my console host
