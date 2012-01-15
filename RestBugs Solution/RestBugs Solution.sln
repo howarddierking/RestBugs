@@ -23,6 +23,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Json", "..\..\..\..\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Web.Http.SelfHost", "..\..\..\..\WPT\WebStackRuntime\Runtime\src\System.Web.Http.SelfHost\System.Web.Http.SelfHost.csproj", "{66492E69-CE4C-4FB1-9B1F-88DEE09D06F1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C4336772-FFAB-4056-BDE6-4A84981F345B}"
+	ProjectSection(SolutionItems) = preProject
+		..\aspnet webapi migration.txt = ..\aspnet webapi migration.txt
+		design.txt = design.txt
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestBugs.ConsoleClient", "RestBugs.ConsoleClient\RestBugs.ConsoleClient.csproj", "{54DCBF6E-EE50-426E-B12F-33DAB81E1074}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 5
@@ -191,6 +199,21 @@ Global
 		{66492E69-CE4C-4FB1-9B1F-88DEE09D06F1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{66492E69-CE4C-4FB1-9B1F-88DEE09D06F1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{66492E69-CE4C-4FB1-9B1F-88DEE09D06F1}.Release|x86.ActiveCfg = Release|Any CPU
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.CodeCoverage|Any CPU.ActiveCfg = Release|x86
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.CodeCoverage|Mixed Platforms.ActiveCfg = Release|x86
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.CodeCoverage|Mixed Platforms.Build.0 = Release|x86
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.CodeCoverage|x86.ActiveCfg = Release|x86
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.CodeCoverage|x86.Build.0 = Release|x86
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.Debug|x86.ActiveCfg = Debug|x86
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.Debug|x86.Build.0 = Debug|x86
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.Release|Any CPU.ActiveCfg = Release|x86
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.Release|Mixed Platforms.Build.0 = Release|x86
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.Release|x86.ActiveCfg = Release|x86
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -198,6 +221,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1FE6F881-2365-418C-AD5C-ED987F07F393} = {E3552BDA-0A81-45C8-A4B5-9B53186A50B5}
 		{918F3150-2444-477C-86BD-4C35F0512261} = {E3552BDA-0A81-45C8-A4B5-9B53186A50B5}
+		{54DCBF6E-EE50-426E-B12F-33DAB81E1074} = {E3552BDA-0A81-45C8-A4B5-9B53186A50B5}
 		{0777C6CB-7F07-4A09-BF0A-A7FF8028F48E} = {1D58AEC4-0707-4F73-8F02-8823578FC39D}
 		{DDC1CE0C-486E-4E35-BB3B-EAB61F8F9440} = {4776E5CD-7725-4F87-B583-F2808FCB3987}
 		{03A5E5F2-2E23-48F2-ABCC-6C41BAC9AC02} = {4776E5CD-7725-4F87-B583-F2808FCB3987}

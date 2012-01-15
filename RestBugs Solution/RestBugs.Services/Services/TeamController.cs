@@ -20,13 +20,14 @@ namespace RestBugs.Services.Services
             _teamRepository = teamRepository;
         }
 
-        public HttpResponseMessage<IEnumerable<TeamMember>> GetTeam() {
+        public HttpResponseMessage<IEnumerable<TeamMember>> Get() {
             var response =  new HttpResponseMessage<IEnumerable<TeamMember>>(_teamRepository.GetAll());
 
             response.Content.Headers.AddWithoutValidation("razortemplate", "team");
             return response;
         }
 
+        // TODO: figure out a clean way of declaring this resource hierarchy
         public HttpResponseMessage<IEnumerable<Bug>> GetTeamMemberActiveBugs(int teamMemberId) {
             var response =
                 new HttpResponseMessage<IEnumerable<Bug>>(
@@ -37,7 +38,7 @@ namespace RestBugs.Services.Services
             return response;
         }
 
-        public HttpResponseMessage<IEnumerable<Bug>> PostBugToTeamMember(JsonObject requestData) {
+        public HttpResponseMessage<IEnumerable<Bug>> PostBugToTeamMember(JsonValue requestData) {
             var bugId = requestData["bugId"].ReadAs<int>();
             var teamMemberId = requestData["teamMemberId"].ReadAs<int>();
             var comments = requestData["comments"] == null ? null : requestData["comments"].ReadAs<string>();
