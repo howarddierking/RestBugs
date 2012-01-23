@@ -43,7 +43,17 @@ namespace RestBugs.Services.Infrastructure
             var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
             var fileName = string.Format(@"Templates\{0}.cshtml", templateKey);
-            var templateText = File.ReadAllText(Path.Combine(baseDirectory, fileName));
+
+            // try to find the file in the local templates folder and fall back to bin folder if can't find anything
+            // this is because Web hosts have the base directory as the vroot dir whereas console hosts will have the base directory == bin folder
+            var fullPath = Path.Combine(baseDirectory, fileName);
+            if(!File.Exists(fullPath)) {
+                fullPath = Path.Combine(baseDirectory, "bin", fileName);
+                if(!File.Exists(fullPath))
+                    throw new FileNotFoundException(string.Format("Razor template '{0}' was not found.", fullPath));
+            }
+
+            var templateText = File.ReadAllText(fullPath);
             using (TextReader rdr = new StringReader(templateText))
             {
                 razorResult = Engine.GenerateCode(rdr);
