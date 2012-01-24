@@ -29,12 +29,17 @@ namespace RestBugs.Services.Services
             return response;
         }
 
-        public HttpResponseMessage<IEnumerable<Bug>> Post(JsonValue content) {
+        /*
+         * public HttpResponseMessage<IEnumerable<Bug>> Post(JsonValue content) {
             dynamic cnt = content;
             int bugId = cnt.id;
             string comments = cnt.comments;
+         */
 
-            Bug bug = _bugRepository.Get(bugId);
+        public HttpResponseMessage<IEnumerable<Bug>> Post(int id, string comments) {
+            
+
+            Bug bug = _bugRepository.Get(id); //bugId
             if (bug == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 

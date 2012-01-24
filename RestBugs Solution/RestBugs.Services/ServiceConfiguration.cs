@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Http.Routing;
 using System.Web.Routing;
 using Ninject;
+using RestBugs.Services.Formatters;
 using RestBugs.Services.Infrastructure;
 using RestBugs.Services.MessageHandlers;
 using RestBugs.Services.Model;
@@ -35,8 +36,9 @@ namespace RestBugs.Services
 
             config.Routes.MapHttpRoute("defaultapi", "{controller}/{id}",
                                        new { controller = "Home", id = RouteParameter.Optional });
-            
+
             config.Formatters.Add(new RazorHtmlMediaTypeFormatter());
+            config.Formatters.Add(new TextBugsFormatter());
 
             config.MessageHandlers.Add(new EtagMessageHandler());
 
@@ -45,6 +47,8 @@ namespace RestBugs.Services
             kernel.Bind<ITeamRepository>().To<StaticTeamRepository>();
 
             config.ServiceResolver.SetResolver(t => kernel.Get(t), t => kernel.GetAll(t));
+
+            config.Filters.Add(new DebuggingExceptionFilter());
         }    
     }
 

@@ -49,6 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Formatters\TextBugsFormatter.cs" />
+    <Compile Include="Infrastructure\DebuggingExceptionFilter.cs" />
+    <Compile Include="Infrastructure\MyLoggingFilter.cs" />
     <Compile Include="Infrastructure\RazorFormatterExtensionMethods.cs" />
     <Compile Include="Infrastructure\RazorHtmlMediaTypeFormatter.cs" />
     <Compile Include="Infrastructure\TemplateBase.cs" />

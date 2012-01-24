@@ -42,66 +42,66 @@ namespace RestBugs.Services.Specs
         static IEnumerable<Bug> expectedResult;
     }
 
-    public class when_posting_bug_to_active
-    {
-        Establish context = () =>
-        {
-            var testBug = new Bug { Id = 1 };
-            var mockRepo = new Mock<IBugRepository>();
-            mockRepo.Setup(r => r.Get(1)).Returns(testBug);
-            mockRepo.Setup(r => r.GetAll()).Returns(new[] { testBug });
+    //public class when_posting_bug_to_active
+    //{
+    //    Establish context = () =>
+    //    {
+    //        var testBug = new Bug { Id = 1 };
+    //        var mockRepo = new Mock<IBugRepository>();
+    //        mockRepo.Setup(r => r.Get(1)).Returns(testBug);
+    //        mockRepo.Setup(r => r.GetAll()).Returns(new[] { testBug });
 
-            controller = new BugsActiveController(mockRepo.Object);
-        };
+    //        controller = new BugsActiveController(mockRepo.Object);
+    //    };
 
-        Because of = () =>
-        {
-            var data = new JsonObject();
-            data.Add("id", 1);
-            data.Add("comments", "activating bug 1");
+    //    Because of = () =>
+    //    {
+    //        var data = new JsonObject();
+    //        data.Add("id", 1);
+    //        data.Add("comments", "activating bug 1");
 
-            result = controller.Post(data);
-            resultContent = result.Content.ReadAsync().Result;
-        };
+    //        result = controller.Post(data);
+    //        resultContent = result.Content.ReadAsync().Result;
+    //    };
 
-        It should_not_be_null = () => result.ShouldNotBeNull();
+    //    It should_not_be_null = () => result.ShouldNotBeNull();
 
-        It should_have_1_bug_in_it = () => resultContent.Count().ShouldEqual(1);
+    //    It should_have_1_bug_in_it = () => resultContent.Count().ShouldEqual(1);
 
-        It should_contain_a_bug_with_id_1 = () => resultContent.First().Id.Equals(1);
+    //    It should_contain_a_bug_with_id_1 = () => resultContent.First().Id.Equals(1);
 
-        It should_add_comment_to_history = () => resultContent.First().History.Count.ShouldEqual(2);
+    //    It should_add_comment_to_history = () => resultContent.First().History.Count.ShouldEqual(2);
 
-        static BugsActiveController controller;
-        static HttpResponseMessage<IEnumerable<Bug>> result;
-        static IEnumerable<Bug> resultContent;
-    }
+    //    static BugsActiveController controller;
+    //    static HttpResponseMessage<IEnumerable<Bug>> result;
+    //    static IEnumerable<Bug> resultContent;
+    //}
 
-    public class when_posting_nonexistant_bug_to_active
-    {
-        Establish context = () =>
-        {
-            var mockRepo = new Mock<IBugRepository>();
-            mockRepo.Setup(r => r.Get(100)).Returns(null as Bug);
-            controller = new BugsActiveController(mockRepo.Object);
-        };
+    //public class when_posting_nonexistant_bug_to_active
+    //{
+    //    Establish context = () =>
+    //    {
+    //        var mockRepo = new Mock<IBugRepository>();
+    //        mockRepo.Setup(r => r.Get(100)).Returns(null as Bug);
+    //        controller = new BugsActiveController(mockRepo.Object);
+    //    };
 
-        Because of = () =>
-        {
-            dynamic data = new JsonObject();
-            data.id = 100;
-            data.comments = "activating bug 1";
+    //    Because of = () =>
+    //    {
+    //        dynamic data = new JsonObject();
+    //        data.id = 100;
+    //        data.comments = "activating bug 1";
 
-            Exception = Catch.Exception(() => controller.Post(data));
-        };
+    //        Exception = Catch.Exception(() => controller.Post(data));
+    //    };
 
-        It should_fail = () => Exception.ShouldNotBeNull();
+    //    It should_fail = () => Exception.ShouldNotBeNull();
 
-        It should_be_http_exception = () => Exception.ShouldBeOfType(typeof(HttpResponseException));
+    //    It should_be_http_exception = () => Exception.ShouldBeOfType(typeof(HttpResponseException));
 
-        It should_throw_http_404 = () => ((HttpResponseException)Exception).Response.StatusCode.ShouldEqual(HttpStatusCode.NotFound);
+    //    It should_throw_http_404 = () => ((HttpResponseException)Exception).Response.StatusCode.ShouldEqual(HttpStatusCode.NotFound);
 
-        static BugsActiveController controller;
-        static Exception Exception;
-    }
+    //    static BugsActiveController controller;
+    //    static Exception Exception;
+    //}
 }

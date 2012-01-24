@@ -6,14 +6,8 @@ namespace RestBugs.Services.Services
 
     public class HomeController : ApiController
     {
-        [NonAction]
         public SystemDescription Get() {
-            return new SystemDescription();
-        }
-
-        [ActionName("Get")]
-        [AllowAnonymous]
-        public SystemDescription Fetch() {
+            throw new ApplicationException("something bad happened");
             return new SystemDescription();
         }
     }

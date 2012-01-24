@@ -11,11 +11,11 @@ namespace RestBugs.Services.Model
         static StaticBugRepository() {
             var bugsList = new List<Bug>
                 {
-                    new Bug {Id= 1, Status = BugStatus.Active, Priority = 3},
-                    new Bug {Id= 2, Status = BugStatus.Active, Priority = 1, Rank = 2},
-                    new Bug {Id= 3, Status = BugStatus.Active, Priority = 1},
-                    new Bug {Id= 4, Status = BugStatus.Resolved},
-                    new Bug {Id= 5, Status = BugStatus.Closed}
+                    new Bug {Id= 1, Name = "Bug 1", Status = BugStatus.Active, Priority = 3},
+                    new Bug {Id= 2, Name = "Bug 2", Status = BugStatus.Active, Priority = 1, Rank = 2},
+                    new Bug {Id= 3, Name = "Bug 3", Status = BugStatus.Active, Priority = 1},
+                    new Bug {Id= 4, Name = "Bug 4", Status = BugStatus.Resolved},
+                    new Bug {Id= 5, Name = "Bug 5", Status = BugStatus.Closed}
                 };
 
             var howard = new TeamMember { Id = 1, Name = "Howard Dierking" };
