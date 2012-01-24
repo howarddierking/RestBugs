@@ -9,7 +9,6 @@ using Ninject;
 using RestBugs.Services.Infrastructure;
 using RestBugs.Services.MessageHandlers;
 using RestBugs.Services.Model;
-using HttpMethodConstraint = System.Web.Http.Routing.HttpMethodConstraint;
 
 namespace RestBugs.Services
 {
