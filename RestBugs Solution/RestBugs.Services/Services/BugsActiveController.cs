@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Json;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -17,12 +16,14 @@ namespace RestBugs.Services.Services
             _bugRepository = bugRepository;
         }
 
-        public HttpResponseMessage<IEnumerable<Bug>> Get() {
-            var response = new HttpResponseMessage<IEnumerable<Bug>>(
-                _bugRepository.GetAll().Where(
-                    b => b.Status == BugStatus.Active)
+        public HttpResponseMessage<IQueryable<Bug>>Get() {
+            var response =
+                new HttpResponseMessage<IQueryable<Bug>>(
+                    _bugRepository.GetAll()
+                    .Where(b => b.Status == BugStatus.Active)
                     .OrderBy(b => b.Priority)
-                    .ThenBy(b => b.Rank));
+                    .ThenBy(b => b.Rank)
+                    .AsQueryable());
 
             response.SetTemplate("activebugs");
 

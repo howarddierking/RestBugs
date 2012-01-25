@@ -7,7 +7,7 @@ namespace RestBugs.Services.Services
     public class HomeController : ApiController
     {
         public SystemDescription Get() {
-            throw new ApplicationException("something bad happened");
+            //throw new ApplicationException("something bad happened");
             return new SystemDescription();
         }
     }
