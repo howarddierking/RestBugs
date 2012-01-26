@@ -1,0 +1,9 @@
+<bugDto>
+<Status>pending</Status>
+<Priority>1</Priority>
+<Rank>1</Rank>
+<Id>1</Id>
+<AssignedTo>howard</AssignedTo>
+<Name>mybug</Name>
+</bugDto>
+

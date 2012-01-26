@@ -35,6 +35,7 @@
       <HintPath>..\packages\Ninject.2.2.1.4\lib\net40-Full\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http">
       <HintPath>..\..\..\..\..\WPT\WebStackRuntime\Runtime\external\System.Net.Http.dll</HintPath>
@@ -61,7 +62,9 @@
     <Compile Include="MessageHandlers\EtagMessageHandler.cs" />
     <Compile Include="MessageHandlers\IETagStore.cs" />
     <Compile Include="MessageHandlers\InMemoryETagStore.cs" />
+    <Compile Include="MessageHandlers\MessageLoggingMessageHandler.cs" />
     <Compile Include="Model\Bug.cs" />
+    <Compile Include="Model\BugDTO.cs" />
     <Compile Include="Model\BugQueryForm.cs" />
     <Compile Include="Model\BugStatus.cs" />
     <Compile Include="Model\IBugRepository.cs" />
@@ -81,6 +84,7 @@
     <Compile Include="Services\GreetingController.cs" />
     <Compile Include="Services\HomeController.cs" />
     <Compile Include="Services\TeamController.cs" />
+    <Compile Include="Services\TestBugController.cs" />
     <Content Include="Templates\bugs.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -41,6 +41,7 @@ namespace RestBugs.Services
             config.Formatters.Add(new TextBugsFormatter());
 
             config.MessageHandlers.Add(new EtagMessageHandler());
+            config.MessageHandlers.Add(new MessageLoggingMessageHandler());
 
             var kernel = new StandardKernel();
             kernel.Bind<IBugRepository>().To<StaticBugRepository>();

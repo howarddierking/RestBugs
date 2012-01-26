@@ -41,6 +41,41 @@ namespace RestBugs.Services.Formatters
             writer.Flush();
         }
 
+        protected override object OnReadFromStream(Type type, Stream stream, HttpContentHeaders contentHeaders, FormatterContext formatterContext) {
+            var dto = new BugDTO();
+            var reader = new StreamReader(stream);
+            while(!reader.EndOfStream) {
+                var line = reader.ReadLine();
+                var kv = line.Split(new[]{':'});
+                switch (kv[0]) {
+                    case "Status":
+                        dto.Status = kv[1];
+                        break;
+                    case "Priority":
+                        dto.Priority = Convert.ToInt32(kv[1]);
+                        break;
+                    case "Rank":
+                        dto.Rank = Convert.ToInt32(kv[1]);
+                        break;
+                    case "Id":
+                        dto.Id = Convert.ToInt32(kv[1]);
+                        break;
+                    case "AssignedTo":
+                        dto.AssignedTo = kv[1];
+                        break;
+                    case "Name":
+                        dto.Name = kv[1];
+                        break;
+                }
+            }
+            return dto;
+        }
+
+        protected override bool CanReadType(Type type) {
+            var r = typeof (Bug).IsAssignableFrom(type) || typeof(BugDTO).IsAssignableFrom(type);
+            return r;
+        }
+
         protected override IEnumerable<KeyValuePair<string, string>> OnGetResponseHeaders(Type objectType, string mediaType, HttpResponseMessage responseMessage)
         {
             return new List<KeyValuePair<string, string>>()
