@@ -1,8 +1,6 @@
-Status:pending%0D%0A
-Priority:1%0D%0A
-Rank:1%0D%0A
-Id:1%0D%0A
-AssignedTo:howard%0D%0A
+Status:pending
+Priority:1
+Rank:1
+Id:1
+AssignedTo:howard
 Name:mybug
-
-

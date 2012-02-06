@@ -16,11 +16,6 @@ namespace RestBugs.Services.Infrastructure
             SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
         }
 
-        //protected override void OnWriteToStream(Type type, object value, Stream stream, HttpContentHeaders contentHeaders, FormatterContext formatterContext, TransportContext transportContext)
-        //{
-        //    WriteStream(value, stream, contentHeaders);
-        //}
-
         protected override bool CanWriteType(Type type) {
             return true;
         }
