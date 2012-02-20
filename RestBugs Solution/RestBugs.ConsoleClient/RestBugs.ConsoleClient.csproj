@@ -49,12 +49,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\WPT\WebStackRuntime\Runtime\src\System.Net.Http.Formatting\System.Net.Http.Formatting.csproj">
-      <Project>{668E9021-CE84-49D9-98FB-DF125A9FCDB0}</Project>
-      <Name>System.Net.Http.Formatting</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

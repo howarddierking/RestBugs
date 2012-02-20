@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Json;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,6 +9,8 @@ using RestBugs.Services.Model;
 
 namespace RestBugs.Services.Services
 {
+    using System.Json;
+
     public class BugsPendingController : ApiController
     {
         readonly IBugRepository _bugRepository;

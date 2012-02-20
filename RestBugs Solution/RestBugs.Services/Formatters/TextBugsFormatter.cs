@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using RestBugs.Services.Model;
 
 namespace RestBugs.Services.Formatters
 {
+    using System.Net.Http.Formatting;
+
     public class TextBugsFormatter : BufferedMediaTypeFormatter
     {
         readonly MediaTypeHeaderValue _bugsV1HeaderValue;
