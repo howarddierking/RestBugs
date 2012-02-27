@@ -7,4 +7,11 @@ namespace RestBugs.Services.Model
         Bug Get(int bugId);
         void Add(Bug bug);
     }
+
+    public interface IBugDtoRepository
+    {
+        IEnumerable<BugDTO> GetAll();
+        BugDTO Get(int bugId);
+        void Add(BugDTO bug);
+    }
 }

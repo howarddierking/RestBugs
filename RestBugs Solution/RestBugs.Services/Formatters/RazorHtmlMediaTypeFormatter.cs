@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using RestBugs.Services.Infrastructure;
 
-namespace RestBugs.Services.Infrastructure
+namespace RestBugs.Services.Formatters
 {
     public class RazorHtmlMediaTypeFormatter : MediaTypeFormatter
     {
@@ -27,16 +29,19 @@ namespace RestBugs.Services.Infrastructure
 
         static void WriteStream(object value, Stream stream, HttpContentHeaders contentHeaders) {
             IEnumerable<string> headerValues;
-            string razorTemplate = null;
+            string razorTemplate = "bugs-all"; //hard-coding for now...
 
-            if (contentHeaders.TryGetValues("razortemplate", out headerValues))
-                razorTemplate = headerValues.FirstOrDefault();
+            //if (contentHeaders.TryGetValues("razortemplate", out headerValues))
+            //    razorTemplate = headerValues.FirstOrDefault();
 
-            if (razorTemplate != null)
-                contentHeaders.Remove("razortemplate");
+            //if (razorTemplate != null)
+            //    contentHeaders.Remove("razortemplate");
 
             var templateManager = new TemplateEngine();
-            var currentTemplate = templateManager.CreateTemplateForType(value.GetType(), razorTemplate);
+
+            var valType = value == null ? null : value.GetType();
+
+            var currentTemplate = templateManager.CreateTemplateForType(valType, razorTemplate);
 
             // set the model for the template
             currentTemplate.Model = value;

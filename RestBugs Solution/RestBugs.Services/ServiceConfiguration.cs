@@ -29,27 +29,30 @@ namespace RestBugs.Services
                 /Bug/{Bug}/History - GET
              */
 
-            config.Routes.MapHttpRoute("active", "bugs/active", new { controller = "BugsActive" });
-            config.Routes.MapHttpRoute("closed", "bugs/closed", new { controller = "BugsClosed" });
-            config.Routes.MapHttpRoute("pending", "bugs/pending", new { controller = "BugsPending" });
-            config.Routes.MapHttpRoute("resolved", "bugs/resolved", new { controller = "BugsResolved" });
+            config.Routes.MapHttpRoute("def", "bugs/{controller}", new {controller = "Index"});
 
-            config.Routes.MapHttpRoute("defaultapi", "{controller}/{id}",
-                                       new { controller = "Home", id = RouteParameter.Optional });
+            //config.Routes.MapHttpRoute("active", "bugs/active", new { controller = "BugsActive" });
+            //config.Routes.MapHttpRoute("closed", "bugs/closed", new { controller = "BugsClosed" });
+            //config.Routes.MapHttpRoute("pending", "bugs/pending", new { controller = "BugsPending" });
+            //config.Routes.MapHttpRoute("resolved", "bugs/resolved", new { controller = "BugsResolved" });
+
+            //config.Routes.MapHttpRoute("defaultapi", "{controller}/{id}",
+            //                           new { controller = "Home", id = RouteParameter.Optional });
 
             config.Formatters.Add(new RazorHtmlMediaTypeFormatter());
-            config.Formatters.Add(new TextBugsFormatter());
+            //config.Formatters.Add(new TextBugsFormatter());
 
-            config.MessageHandlers.Add(new EtagMessageHandler());
+            //config.MessageHandlers.Add(new EtagMessageHandler());
             //config.MessageHandlers.Add(new MessageLoggingMessageHandler());
 
             var kernel = new StandardKernel();
             kernel.Bind<IBugRepository>().To<StaticBugRepository>();
             kernel.Bind<ITeamRepository>().To<StaticTeamRepository>();
+            kernel.Bind<IBugDtoRepository>().To<StaticBugDtoRepository>();
 
             config.ServiceResolver.SetResolver(t => kernel.Get(t), t => kernel.GetAll(t));
 
-            config.Filters.Add(new DebuggingExceptionFilter());
+            //config.Filters.Add(new DebuggingExceptionFilter());
         }    
     }
 

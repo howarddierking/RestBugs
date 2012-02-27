@@ -75,7 +75,7 @@
     <Compile Include="Infrastructure\DebuggingExceptionFilter.cs" />
     <Compile Include="Infrastructure\MyLoggingFilter.cs" />
     <Compile Include="Infrastructure\RazorFormatterExtensionMethods.cs" />
-    <Compile Include="Infrastructure\RazorHtmlMediaTypeFormatter.cs" />
+    <Compile Include="Formatters\RazorHtmlMediaTypeFormatter.cs" />
     <Compile Include="Infrastructure\TemplateBase.cs" />
     <Compile Include="Infrastructure\TemplateEngine.cs" />
     <Compile Include="LinkInfo.cs" />
@@ -102,8 +102,13 @@
     <Compile Include="Services\BugsClosedController.cs" />
     <Compile Include="Services\BugsPendingController.cs" />
     <Compile Include="Services\BugsResolvedController.cs" />
+    <Compile Include="Services\BacklogController.cs" />
+    <Compile Include="Services\QaController.cs" />
+    <Compile Include="Services\DoneController.cs" />
+    <Compile Include="Services\WorkingController.cs" />
     <Compile Include="Services\GreetingController.cs" />
     <Compile Include="Services\HomeController.cs" />
+    <Compile Include="Services\IndexController.cs" />
     <Compile Include="Services\TeamController.cs" />
     <Compile Include="Services\TestBugController.cs" />
     <Content Include="Templates\bugs.cshtml">
@@ -129,6 +134,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Content Include="Templates\bugs-all.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

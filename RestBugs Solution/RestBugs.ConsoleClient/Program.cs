@@ -2,103 +2,274 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Xml;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace RestBugs.ConsoleClient
 {
+    class BugsMediaTypeConstants
+    {
+        public const string ID_FORMS = "forms";
+        public const string ID_BUGS = "bugs";
+        public const string CLASS_ALL = "all";
+        public const string ID_LINKS = "links";
+        public const string CLASS_NEW = "new";
+        public const string CLASS_MOVE = "move";
+        public const string CLASS_NEXT = "next";
+        public const string CLASS_TITLE = "title";
+        public const string CLASS_DESCRIPTION = "description";
+        public const string REL_BACKLOG = "backlog";
+        public const string ENTRY_PATH = "bugs";
+    }
+
     class Program
     {
-        static HttpClient client;
+        // for bookmarks, I may want to have a bookmarking service that is a map of rel to url
+        // can create a client cache that is even persistable - talk about this in the section on self-describing messages (control data)
 
-        static void Main(string[] args) {
-            string baseUri = "http://localhost:8800";
-            InitializeClient();
+        static HttpClient _client;
 
-            Start(baseUri);
-            Console.ReadKey();
+        static void Main() {
+            var clientHandler = new HttpClientHandler();
+            _client = new HttpClient(clientHandler) {BaseAddress = new Uri("http://localhost:8800")};
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
+
+            //loop is as follows
+            //----------------------
+            //get a representation
+            //display represenation
+            //process a command (depends on the type of command [a|form])
+            //get another represenation
+            //...
+
+            Console.WriteLine("Welcome to RESTBugs \"on command\"!\n");
+            Console.WriteLine("Enter a command per the instructions below, or enter 'q' to quit.");
+
+            Go();
         }
 
-        static void Start(string baseUri) {
-            while (true) {
-                Console.WriteLine("Retrieving list of reports\r\n");
-                XmlDocument document = GetDocument(baseUri);
+        static void Go() {
+            var resp = _client.GetAsync(BugsMediaTypeConstants.ENTRY_PATH).Result;
+            //TODO: factory logic to select the correct represenation impl based on content-type header
+            IRepresentation representation = new HtmlBugRepresentation(resp);
+            representation.Display();
 
-                XmlNodeList reports = OutputReports(document);
+            while(true) {
+                try {
+                    Console.Write("\nCommand: ");
+                    var command = Console.ReadLine();
+                    if (command == "q")
+                        break;
 
-                Console.WriteLine("\r\nChoose a report (1 - {0})", reports.Count);
-                ConsoleKeyInfo info = Console.ReadKey();
+                    var newReq = representation.ProcessCommand(command);
 
-                int selection = int.Parse(info.KeyChar.ToString());
-                string uri = string.Format("{0}/{1}", baseUri, reports[selection - 1].Attributes["href"].Value);
-                Console.WriteLine("\r\n" + uri + "\r\n");
+                    var newResp = _client.SendAsync(newReq).Result;
 
-                document = GetDocument(uri);
-                OutputBugs(document);
+                    //add logic to check for failure codes before automatically overwriting the context variable
+                    resp = newResp;
+                    representation = new HtmlBugRepresentation(resp);
+                    representation.Display();
+                }
+                catch(Exception ex) {
+                    Console.WriteLine("ERROR: " + ex.Message);
+                }
+            }
+        }
+    }
 
-                Console.WriteLine("\r\nCommand:\r\n");
-                Console.WriteLine("{Bug #} r - Resolve");
-                Console.WriteLine("b - Back\r\n");
+    class HtmlBugRepresentation : IRepresentation
+    {
+        public static Regex CommandParamsRegex = new Regex(
+            "\"(?<param>[\\w\\s]+)\"|(?<param>\\w+)",
+            RegexOptions.CultureInvariant
+            | RegexOptions.Compiled);
 
-                string command = Console.ReadLine();
-                HandleBugCommand(baseUri, document, command);
+        readonly XDocument _document;
+
+        public HtmlBugRepresentation(HttpResponseMessage resp) {
+            _document = XDocument.Load(resp.Content.ReadAsStreamAsync().Result);
+        }
+
+        public void Display() {
+            DisplayCommands();
+            DisplayNavigation();
+            DisplayBugs();
+        }
+
+        void DisplayBugs() {
+            Console.WriteLine("\nAvailable Bugs");
+            Console.WriteLine("To run one of the available commands for an item,\nenter 'bug' [command name] [item number]");
+            Console.WriteLine("An asterisk next to a command indicates that command as the optimum workflow path");
+            Console.WriteLine("-------------------------------------------------\n");
+            Console.WriteLine("\tTitle\tDescription\t\t\tAvailable Commands");
+            Console.WriteLine("\t-----\t-----------\t\t\t------------------");
+
+            var bugElements =
+                _document.XPathSelectElements(String.Format("//div[@id='{0}']/ul[@class='{1}']/li",
+                                                                 BugsMediaTypeConstants.ID_BUGS,
+                                                                 BugsMediaTypeConstants.CLASS_ALL));
+            var c = 0;
+            foreach (var bugElement in bugElements)
+            {
+                var titleEl = bugElement.XPathSelectElement(String.Format("span[@class='{0}']", BugsMediaTypeConstants.CLASS_TITLE));
+                var descEl = bugElement.XPathSelectElement(String.Format("span[@class='{0}']", BugsMediaTypeConstants.CLASS_DESCRIPTION));
+                var transitions = bugElement.XPathSelectElements(String.Format("form[contains(@class, '{0}')]", BugsMediaTypeConstants.CLASS_MOVE));
+
+                var commands = CreateCommandsString(transitions);
+
+                Console.WriteLine("[{0}]\t{1}\t{2}\t{3}",
+                    c,
+                    titleEl == null ? String.Empty : titleEl.Value,
+                    descEl == null ? String.Empty : descEl.Value,
+                    commands);
+                ++c;
             }
         }
 
-        static void HandleBugCommand(string baseUri, XmlDocument document, string command) {
-            if (command == "b") {
-                Start(baseUri);
-                return;
+        string CreateCommandsString(IEnumerable<XElement> transitions) {
+            //don't display the 'next' hint class
+            var sb = new StringBuilder();
+            foreach (var transition in transitions)
+            {
+                var classAttr = transition.Attribute("class").Value;
+                if (classAttr.Contains(BugsMediaTypeConstants.CLASS_NEXT))
+                    classAttr = "*" + classAttr.Replace(BugsMediaTypeConstants.CLASS_NEXT, String.Empty).Trim();
+                
+                sb.Append(", " + classAttr);
             }
-
-            string[] items = command.Split(' ');
-            int id = int.Parse(items[0]);
-            XmlNode bug =
-                document.SelectSingleNode("//tr[@class='bug-data']/td[@class='id'][.='" + id + "']").ParentNode;
-            XmlNode form = bug.SelectSingleNode("td/form[@class='resolved']");
-
-            var formPostValues = new Dictionary<string, string>();
-            formPostValues["id"] = id.ToString();
-            formPostValues["comments"] = "resolved";
-            var content = new FormUrlEncodedContent(formPostValues);
-            string href = form.Attributes["action"].InnerText;
-            string uri = string.Format("{0}{1}", baseUri, href);
-            client.PostAsync(uri, content).Wait();
+            sb.Remove(0, 1);
+            return sb.ToString();
         }
 
-        static XmlNodeList OutputReports(XmlDocument document) {
-            XmlNodeList reports = document.SelectNodes("//a[@rel='bugs']");
-
-            for (int i = 1; i <= reports.Count; i++) {
-                XmlNode node = reports[i - 1];
-                Console.WriteLine("{0} - {1}", i, node.InnerText);
-            }
-            return reports;
-        }
-
-        static void OutputBugs(XmlDocument document) {
-            XmlNodeList bugs = document.SelectNodes("//tr[@class='bug-data']");
-            Console.WriteLine("ID\tName\tStatus\t\tPriority\tRank\tAssignedTo\r\n");
-            foreach (XmlElement bug in bugs) {
-                string id = bug.SelectSingleNode("td[@class='id']").InnerText.Trim();
-                string name = bug.SelectSingleNode("td[@class='name']").InnerText.Trim();
-                string status = bug.SelectSingleNode("td[@class='status']").InnerText.Trim();
-                string priority = bug.SelectSingleNode("td[@class='priority']").InnerText.Trim();
-                string rank = bug.SelectSingleNode("td[@class='rank']").InnerText.Trim();
-                string assignedTo = bug.SelectSingleNode("td[@class='assignedTo']").InnerText.Trim();
-                Console.WriteLine("{0}\t{1}\t{2}\t\t{3}\t\t{4}\t{5}", id, name, status, priority, rank, assignedTo);
+        void DisplayNavigation() {
+            Console.WriteLine("\nAvailable Links");
+            Console.WriteLine("Enter 'navigate [resource]' to navigate");
+            Console.WriteLine("----------------------------------------");
+            
+            var navigationElements = _document.XPathSelectElements(String.Format("//div[@id='{0}']/a", BugsMediaTypeConstants.ID_LINKS));
+            foreach (var navigationElement in navigationElements) {
+                Console.WriteLine("{0}", navigationElement.Attribute("rel").Value);
             }
         }
 
-        static XmlDocument GetDocument(string uri) {
-            HttpResponseMessage response = client.GetAsync(uri).Result;
-            var document = new XmlDocument();
-            document.Load(response.Content.ReadAsStreamAsync().Result);
-            return document;
+        void DisplayCommands() {
+            Console.WriteLine("\nAvailable Forms");
+            Console.WriteLine("Enter 'form [command name] [param1 [paramN]]' to execute.");
+            Console.WriteLine("---------------------------------------------------------");
+            var formElements = _document.XPathSelectElements(String.Format("//div[@id='{0}']/form", BugsMediaTypeConstants.ID_FORMS));
+            foreach (var formElement in formElements) {
+                var className = formElement.Attribute("class").Value;
+                //get text inputs 
+                //NOTE: this part would be more complicated depending on the media type
+                var dataTransferElements = formElement.XPathSelectElements("input[@type='text']");
+                var inputsSb = new StringBuilder();
+                foreach (var dataTransferElement in dataTransferElements) {
+                    var name = dataTransferElement.Attribute("name").Value;
+                    inputsSb.AppendFormat("[{0}] ", name);
+                }
+                Console.WriteLine("\"{0}\" {1}", className, inputsSb.ToString().Trim());
+            }
         }
 
-        static void InitializeClient() {
-            client = new HttpClient();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
+        public HttpRequestMessage ProcessCommand(string command) {
+            if (command.StartsWith("bug", StringComparison.InvariantCultureIgnoreCase))
+                return CreateBugRequest(command.Substring(4));
+            if (command.StartsWith("link", StringComparison.InvariantCultureIgnoreCase))
+                return CreateLinkRequest(command.Substring(5));
+            if (command.StartsWith("form", StringComparison.InvariantCultureIgnoreCase))
+                return CreateFormRequest(command.Substring(5));
+            throw new ArgumentException("Unknown command.");
         }
+
+        HttpRequestMessage CreateFormRequest(string formCommand) {
+            var parameters = ParseParamters(formCommand);
+
+            //get the form element referenced by the command
+            var formElement =
+                _document.XPathSelectElement(string.Format("//div[@id='{0}']/form[contains(@class, '{1}')]",
+                                                           BugsMediaTypeConstants.ID_FORMS,
+                                                           parameters[0]));
+            var action = formElement.Attribute("action").Value;
+
+            //set the values of the form's data transfer elements based on the parameters provided from the command line
+            //this logic, while limited, replicates the logic in 'DisplayCommands' so at this point, consistentcy is best
+            var paramsIter = 1;
+            var dataTransferInputElements = formElement.XPathSelectElements("input[@type='text']");
+            foreach (var dataTransferElement in dataTransferInputElements) {
+                dataTransferElement.Attribute("value").SetValue(parameters[paramsIter++]);
+            }
+
+            var content = GetFormUrlEncodedDataFrom(formElement);
+            var newReq = new HttpRequestMessage(HttpMethod.Post, action) {Content = content};
+            return newReq;
+        }
+
+        FormUrlEncodedContent GetFormUrlEncodedDataFrom(XElement formElement) {
+            //populate the kvp structure
+            //yes, I realize that this is innefficient - will clean up
+            var data = new List<KeyValuePair<string, string>>();
+            var dataTransferElements = formElement.XPathSelectElements("input");
+            foreach (var dataTransferElement in dataTransferElements)
+            {
+                var kvp = new KeyValuePair<string, string>(
+                    dataTransferElement.Attribute("name").Value,
+                    dataTransferElement.Attribute("value").Value);
+                data.Add(kvp);
+            }
+
+            var content = new FormUrlEncodedContent(data);
+            return content;
+        }
+
+        List<string> ParseParamters(string args) {
+            var matches = CommandParamsRegex.Matches(args);
+
+            var parameters = new List<string>();
+            foreach (Match match in matches) {
+                parameters.Add(match.Groups["param"].Captures[0].Value);
+            }
+            
+            return parameters;
+        }
+
+        HttpRequestMessage CreateLinkRequest(string linkCommand) {
+            //get the element specified by the command
+            var specifiedLinkElement =
+                _document.XPathSelectElement(String.Format("//div[@id='{0}']/a[@rel='{1}']",
+                                                           BugsMediaTypeConstants.ID_LINKS, linkCommand));
+            if(specifiedLinkElement==null)
+                throw new Exception("Cannot find a link with rel=" + linkCommand);
+
+            var linkValue = specifiedLinkElement.Attribute("href").Value;
+            var newReq = new HttpRequestMessage(HttpMethod.Get, linkValue);
+            return newReq;
+        }
+
+        HttpRequestMessage CreateBugRequest(string bugCommand) {
+            var parameters = ParseParamters(bugCommand);
+            var className = parameters[0];
+            var bugnumber = int.Parse(parameters[1]);  //note this isn't the same as bug id - just the position of the bug in the current representation
+
+            var formElement =
+                _document.XPathSelectElement(
+                    string.Format("//div[@id='{0}']/ul[@class='{1}']/li[{2}]/form[contains(@class, '{3}')]",
+                                  BugsMediaTypeConstants.ID_BUGS,
+                                  BugsMediaTypeConstants.CLASS_ALL,
+                                  bugnumber + 1,
+                                  className));
+
+            var action = formElement.Attribute("action").Value;
+            var newReq = new HttpRequestMessage(HttpMethod.Post, action)
+                         {Content = GetFormUrlEncodedDataFrom(formElement)};
+            return newReq;
+        }
+    }
+
+    interface IRepresentation
+    {
+        void Display();
+        HttpRequestMessage ProcessCommand(string command);
     }
 }

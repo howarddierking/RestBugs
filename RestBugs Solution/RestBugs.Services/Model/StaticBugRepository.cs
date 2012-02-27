@@ -30,7 +30,7 @@ namespace RestBugs.Services.Model
         }
 
         public Bug Get(int bugId) {
-            return bugs.Where(b => b.Id == bugId).FirstOrDefault();
+            return bugs.FirstOrDefault(b => b.Id == bugId);
         }
 
         public void Add(Bug bug) {
@@ -40,6 +40,42 @@ namespace RestBugs.Services.Model
 
         static int GetNextId() {
             return bugs.OrderBy(b => b.Id).Last().Id + 1;
+        }
+    }
+
+    public class StaticBugDtoRepository : IBugDtoRepository
+    {
+        static readonly List<BugDTO> bugDtos;
+
+        static StaticBugDtoRepository()
+        {
+            var bugsDtosList = new List<BugDTO>
+                {
+                    new BugDTO {Id= 1, Title = "Bug 1", Status = "Working", Description = "Bug 1 longer description"},
+                    new BugDTO {Id= 2, Title = "Bug 2", Status = "Working", Description = "Bug 2 longer description"},
+                    new BugDTO {Id= 3, Title = "Bug 3", Status = "Working", Description = "Bug 3 longer description"},
+                    new BugDTO {Id= 4, Title = "Bug 4", Status = "Backlog", Description = "Bug 4 longer description"},
+                    new BugDTO {Id= 5, Title = "Bug 5", Status = "Done", Description = "Bug 5 longer description"}
+                };
+
+            bugDtos = bugsDtosList;
+        }
+
+        public IEnumerable<BugDTO> GetAll() {
+            return bugDtos;
+        }
+
+        public BugDTO Get(int bugId) {
+            return bugDtos.FirstOrDefault(b => b.Id == bugId);
+        }
+
+        public void Add(BugDTO bug) {
+            bug.Id = GetNextId();
+            bugDtos.Add(bug);
+        }
+
+        static int GetNextId() {
+            return bugDtos.OrderBy(b => b.Id).Last().Id + 1;
         }
     }
 }
