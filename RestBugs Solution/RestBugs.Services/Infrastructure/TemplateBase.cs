@@ -37,35 +37,5 @@ namespace RestBugs.Services.Infrastructure
             return result;
             //return result.Replace("\n", "<br/>&nbsp&nbsp&nbsp&nbsp&nbsp");//.Replace(" ", "&nbsp&nbsp&nbsp&nbsp&nbsp");
         }
-
-        string FormattedLink(LinkInfo linkData, string rel) {
-            return string.Format("<a href=\"{0}\" rel=\"{1}\">{2}</a>",
-                    linkData.Link,
-                    rel,
-                    linkData.Description);
-        }
-
-        public string LinkFromEntity(string namedChild, object entity, string rel)
-        {
-            if (entity != null && entity is ILinkProvider)
-            {
-                var linkData = ((ILinkProvider)entity).GetLinkInfo(namedChild);
-                return FormattedLink(linkData, rel);
-            }
-
-            return null;
-        }
-
-        public string LinkFromEntity(object entity, string rel)
-        {
-            if (entity != null && entity is ILinkProvider)
-            {
-                var linkData = ((ILinkProvider)entity).GetLinkInfo();
-                return FormattedLink(linkData, rel);
-
-            }
-
-            return null;
-        }
     }
 }

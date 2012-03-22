@@ -3,39 +3,45 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using RestBugs.Services.Infrastructure;
+using AutoMapper;
 using RestBugs.Services.Model;
 
 namespace RestBugs.Services.Services
 {
     public class WorkingController : ApiController
     {
-        readonly IBugDtoRepository _bugDtoRepository;
+        readonly IBugRepository _bugRepository;
 
-        public WorkingController(IBugDtoRepository bugDtoRepository) {
-            _bugDtoRepository = bugDtoRepository;
+        public WorkingController(IBugRepository bugRepository) {
+            _bugRepository = bugRepository;
         }
 
-        public HttpResponseMessage<IQueryable<BugDTO>>Get() {
-            var response =
-                new HttpResponseMessage<IQueryable<BugDTO>>(
-                    _bugDtoRepository.GetAll()
-                    .Where(b => b.Status == "Working")
-                    .AsQueryable());
+        private IEnumerable<BugDTO> GetDtos()
+        {
+            var bugs = _bugRepository.GetAll()
+                .Where(b => b.Status == BugStatus.Working)
+                .OrderBy(b => b.Priority)
+                .ThenBy(b => b.Rank);
 
+            var dtos = Mapper.Map<IEnumerable<Bug>, IEnumerable<BugDTO>>(bugs);
+
+            return dtos;
+        }
+
+        public HttpResponseMessage<IEnumerable<BugDTO>>Get() {
+            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(GetDtos());
             return response;
         }
 
         public HttpResponseMessage<IEnumerable<BugDTO>> Post(int id, string comments)
         {
-            BugDTO bugDto = _bugDtoRepository.Get(id); //bugId
-            if (bugDto == null)
+            Bug bug = _bugRepository.Get(id); //bugId
+            if (bug == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            bugDto.Status = "Working";
+            bug.Activate(comments);
 
-            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(
-                _bugDtoRepository.GetAll().Where(b => b.Status == "Working")) {StatusCode = HttpStatusCode.OK};
+            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(GetDtos()) { StatusCode = HttpStatusCode.OK };
             
             return response;
         }

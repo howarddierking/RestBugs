@@ -7,7 +7,7 @@ namespace RestBugs.Services.Specs
     {
         Because of = () => { bug = new Bug(); };
         
-        It should_be_in_pending_state = () => bug.Status.ShouldEqual(BugStatus.Pending);
+        It should_be_in_pending_state = () => bug.Status.ShouldEqual(BugStatus.Backlog);
 
         It should_have_1_entry_in_history = () => bug.History.Count.ShouldEqual(1);
         

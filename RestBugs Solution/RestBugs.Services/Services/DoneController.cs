@@ -3,39 +3,42 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using RestBugs.Services.Infrastructure;
+using AutoMapper;
 using RestBugs.Services.Model;
 
 namespace RestBugs.Services.Services
 {
     public class DoneController : ApiController
     {
-        readonly IBugDtoRepository _bugDtoRepository;
+        readonly IBugRepository _bugRepository;
 
-        public DoneController(IBugDtoRepository bugDtoRepository) {
-            _bugDtoRepository = bugDtoRepository;
+        public DoneController(IBugRepository bugRepository) {
+            _bugRepository = bugRepository;
         }
 
-        public HttpResponseMessage<IQueryable<BugDTO>>Get() {
-            var response =
-                new HttpResponseMessage<IQueryable<BugDTO>>(
-                    _bugDtoRepository.GetAll()
-                    .Where(b => b.Status == "Done")
-                    .AsQueryable());
+        private IEnumerable<BugDTO> GetDoneBugDtos()
+        {
+            var bugs = _bugRepository.GetAll().Where(b => b.Status == BugStatus.Done);
+            var dtos = Mapper.Map<IEnumerable<Bug>, IEnumerable<BugDTO>>(bugs);
+            return dtos;
+        }
 
+        public HttpResponseMessage<IEnumerable<BugDTO>>Get()
+        {
+            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(GetDoneBugDtos());
             return response;
         }
 
         public HttpResponseMessage<IEnumerable<BugDTO>> Post(int id, string comments)
         {
-            BugDTO bugDto = _bugDtoRepository.Get(id); //bugId
-            if (bugDto == null)
+            var bug = _bugRepository.Get(id); //bugId
+            if (bug == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            bugDto.Status = "Done";
+            bug.Close(comments);
 
-            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(
-                _bugDtoRepository.GetAll().Where(b => b.Status == "Done")) {StatusCode = HttpStatusCode.OK};
+            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(GetDoneBugDtos())
+                               {StatusCode = HttpStatusCode.OK};
             
             return response;
         }

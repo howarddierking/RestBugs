@@ -33,7 +33,8 @@ namespace RestBugs.ConsoleClient
 
         static void Main() {
             var clientHandler = new HttpClientHandler();
-            _client = new HttpClient(clientHandler) {BaseAddress = new Uri("http://localhost:8800")};
+            //_client = new HttpClient(clientHandler) { BaseAddress = new Uri("http://ipv4.fiddler:9200") };
+            _client = new HttpClient(clientHandler) { BaseAddress = new Uri("http://localhost:9200") };
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
 
             //loop is as follows
@@ -145,7 +146,7 @@ namespace RestBugs.ConsoleClient
 
         void DisplayNavigation() {
             Console.WriteLine("\nAvailable Links");
-            Console.WriteLine("Enter 'navigate [resource]' to navigate");
+            Console.WriteLine("Enter 'link [resource]' to navigate");
             Console.WriteLine("----------------------------------------");
             
             var navigationElements = _document.XPathSelectElements(String.Format("//div[@id='{0}']/a", BugsMediaTypeConstants.ID_LINKS));

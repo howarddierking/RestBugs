@@ -3,39 +3,42 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using RestBugs.Services.Infrastructure;
+using AutoMapper;
 using RestBugs.Services.Model;
 
 namespace RestBugs.Services.Services
 {
     public class QaController : ApiController
     {
-        readonly IBugDtoRepository _bugDtoRepository;
+        readonly IBugRepository _bugRepository;
 
-        public QaController(IBugDtoRepository bugDtoRepository) {
-            _bugDtoRepository = bugDtoRepository;
+        public QaController(IBugRepository bugRepository) {
+            _bugRepository = bugRepository;
         }
 
-        public HttpResponseMessage<IQueryable<BugDTO>>Get() {
-            var response =
-                new HttpResponseMessage<IQueryable<BugDTO>>(
-                    _bugDtoRepository.GetAll()
-                    .Where(b => b.Status == "QA")
-                    .AsQueryable());
-
+        public HttpResponseMessage<IEnumerable<BugDTO>>Get()
+        {
+            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(GetResolvedDtos());
             return response;
+        }
+
+        private IEnumerable<BugDTO> GetResolvedDtos()
+        {
+            var bugs = _bugRepository.GetAll().Where(b => b.Status == BugStatus.QA);
+            var dtos = Mapper.Map<IEnumerable<Bug>, IEnumerable<BugDTO>>(bugs);
+            return dtos;
         }
 
         public HttpResponseMessage<IEnumerable<BugDTO>> Post(int id, string comments)
         {
-            BugDTO bugDto = _bugDtoRepository.Get(id); //bugId
-            if (bugDto == null)
+            var bug = _bugRepository.Get(id); //bugId
+            if (bug == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            bugDto.Status = "QA";
+            bug.Resolve(comments);
 
-            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(
-                _bugDtoRepository.GetAll().Where(b => b.Status == "QA")) {StatusCode = HttpStatusCode.OK};
+            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(GetResolvedDtos())
+                               {StatusCode = HttpStatusCode.OK};
             
             return response;
         }

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 namespace RestBugs.Services.Model
 {
-    public class Bug : ILinkProvider
+    public class Bug
     {
         readonly List<Tuple<DateTime, List<Tuple<string, string>>, string>> _history;
 
-        public Bug() {
+        public Bug()
+        {
             _history = new List<Tuple<DateTime, List<Tuple<string, string>>, string>>();
-            
+
             DateTime now = DateTime.Now;
             _history.Add(new Tuple<DateTime, List<Tuple<string, string>>, string>(
                              now, new List<Tuple<string, string>>{ 
@@ -23,30 +24,20 @@ namespace RestBugs.Services.Model
 
         public decimal Rank { get; set; }
 
-        public IList<Tuple<DateTime, List<Tuple<string, string>>, string>> History {
-            get { return _history;  }
-        }
-
         public int Id { get; set; }
-
-        public TeamMember AssignedTo { get;  set; }
 
         public string Name { get; set; }
 
-//todo: make a DTO for this since we don't want people setting this
+        public string Description { get; set; }
 
-        public void AssignTo(TeamMember teamMember, string comments) {
-            var now = DateTime.Now;
-            _history.Add(new Tuple<DateTime, List<Tuple<string, string>>, string>(
-                             now,
-                             new List<Tuple<string, string>> {
-                                 new Tuple<string, string>("Assigned To", teamMember.Name)
-                             }, comments));
-            AssignedTo = teamMember;
+        public IList<Tuple<DateTime, List<Tuple<string, string>>, string>> History
+        {
+            get { return _history; }
         }
 
-        public void Activate(string comments) {
-            Status = BugStatus.Active;
+        public void Activate(string comments)
+        {
+            Status = BugStatus.Working;
             DateTime now = DateTime.Now;
             _history.Add(new Tuple<DateTime, List<Tuple<string, string>>, string>(
                              now, new List<Tuple<string, string>>{ 
@@ -54,8 +45,9 @@ namespace RestBugs.Services.Model
                              }, comments));
         }
 
-        public void Resolve(string comments) {
-            Status = BugStatus.Resolved;
+        public void Resolve(string comments)
+        {
+            Status = BugStatus.QA;
             DateTime now = DateTime.Now;
             _history.Add(new Tuple<DateTime, List<Tuple<string, string>>, string>(
                              now, new List<Tuple<string, string>>{ 
@@ -63,23 +55,24 @@ namespace RestBugs.Services.Model
                              }, comments));
         }
 
-        public void Close(string comments) {
-            Status = BugStatus.Closed;
-            DateTime now = DateTime.Now;
+        public void Approve()
+        {
+            Status = BugStatus.Backlog;
+            var now = DateTime.Now;
             _history.Add(new Tuple<DateTime, List<Tuple<string, string>>, string>(
-                             now, new List<Tuple<string, string>>
-                             {
-                                 new Tuple<string, string>("Status", "Closed")
-                             }, comments));
+                now, new List<Tuple<string, string>>{
+                    new Tuple<string, string>("Status", "Backlog")}, 
+                    string.Empty ));
         }
 
-        public LinkInfo GetLinkInfo(string namedChild = null)
+        public void Close(string comments)
         {
-            if (namedChild == null)
-                return new LinkInfo(string.Format("/bug/{0}", Id), "This bug");
-            if (namedChild == "history")
-                return new LinkInfo(string.Format("/bug/{0}/history", Id), "history");
-            throw new ArgumentException("Cannot generate link for named child " + namedChild);
+            Status = BugStatus.Done;
+            DateTime now = DateTime.Now;
+            _history.Add(new Tuple<DateTime, List<Tuple<string, string>>, string>(
+                             now, new List<Tuple<string, string>>{ 
+                                 new Tuple<string, string>("Status", "Closed")
+                             }, comments));
         }
     }
 }

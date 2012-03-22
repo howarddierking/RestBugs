@@ -4,50 +4,62 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using RestBugs.Services.Infrastructure;
+using AutoMapper;
 using RestBugs.Services.Model;
 
 namespace RestBugs.Services.Services
 {
     public class BacklogController : ApiController
     {
-        readonly IBugDtoRepository _bugDtoRepository;
+        readonly IBugRepository _bugsRepository;
 
-        public BacklogController(IBugDtoRepository bugDtoRepository) {
-            _bugDtoRepository = bugDtoRepository;
+        public BacklogController(IBugRepository bugsRepository) {
+            _bugsRepository = bugsRepository;
         }
 
-        public HttpResponseMessage<IQueryable<BugDTO>>Get() {
-            var response =
-                new HttpResponseMessage<IQueryable<BugDTO>>(
-                    _bugDtoRepository.GetAll()
-                    .Where(b => b.Status == "Backlog")
-                    .AsQueryable());
-
+        public HttpResponseMessage<IEnumerable<BugDTO>>Get() {
+            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(GetBacklogBugDtos());
             return response;
         }
 
-        public HttpResponseMessage<IEnumerable<BugDTO>> Post(BugDTO bugDto)
+        private IEnumerable<BugDTO> GetBacklogBugDtos()
         {
-            if (bugDto.Id == 0)
-                _bugDtoRepository.Add(bugDto);
-            else
-                bugDto = _bugDtoRepository.Get(bugDto.Id); //this is terrible as it cause data loss of input
+            var bugs = _bugsRepository.GetAll().Where(b => b.Status == BugStatus.Backlog);
+            var dtos = Mapper.Map<IEnumerable<Bug>, IEnumerable<BugDTO>>(bugs);
+            return dtos;
+        }
 
-            bugDto.Status = "Backlog";
+        public HttpResponseMessage<IEnumerable<BugDTO>> Post (BugDTO dto, string comments)
+        {
+            Bug bug;
+            if(dto.Id != 0)
+            {
+                bug = _bugsRepository.Get(dto.Id);
+                if(bug == null)
+                    throw new HttpResponseException(HttpStatusCode.NotFound);
+                bug.Approve();
+                return new HttpResponseMessage<IEnumerable<BugDTO>>(GetBacklogBugDtos());
+            }
 
-            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(
-                _bugDtoRepository.GetAll().Where(b => b.Status == "Backlog")) {StatusCode = HttpStatusCode.OK};
+            bug = Mapper.Map<BugDTO, Bug>(dto);
+            bug.Approve();
+
+            _bugsRepository.Add(bug);
             
+            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(GetBacklogBugDtos(), HttpStatusCode.Created);
+            
+            //i still don't like this because it's fragmenting management of my links
+            response.Headers.Location = new Uri(HostUriFromRequest(Request), bug.Id.ToString());
+
             return response;
         }
 
-        static string HostUriFromRequest(HttpRequestMessage requestMessage)
+        static Uri HostUriFromRequest(HttpRequestMessage requestMessage)
         {
-            return String.Format("{0}://{1}:{2}",
-                                 requestMessage.RequestUri.Scheme,
-                                 requestMessage.RequestUri.Host,
-                                 requestMessage.RequestUri.Port);
+            return new Uri(String.Format("{0}://{1}:{2}",
+                                         requestMessage.RequestUri.Scheme,
+                                         requestMessage.RequestUri.Host,
+                                         requestMessage.RequestUri.Port));
         }
     }
 }

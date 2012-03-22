@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.IO;
@@ -18,24 +15,19 @@ namespace RestBugs.Services.Formatters
             SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
         }
 
-        protected override bool CanWriteType(Type type) {
+        protected override bool CanWriteType(Type type)
+        {
             return true;
         }
 
         protected override Task OnWriteToStreamAsync(Type type, object value, Stream stream, HttpContentHeaders contentHeaders, FormatterContext formatterContext, TransportContext transportContext)
         {
-            return Task.Factory.StartNew(() => WriteStream(value, stream, contentHeaders));
+            return Task.Factory.StartNew(() => WriteStream(value, stream));
         }
 
-        static void WriteStream(object value, Stream stream, HttpContentHeaders contentHeaders) {
-            IEnumerable<string> headerValues;
-            string razorTemplate = "bugs-all"; //hard-coding for now...
-
-            //if (contentHeaders.TryGetValues("razortemplate", out headerValues))
-            //    razorTemplate = headerValues.FirstOrDefault();
-
-            //if (razorTemplate != null)
-            //    contentHeaders.Remove("razortemplate");
+        static void WriteStream(object value, Stream stream)
+        {
+            const string razorTemplate = "bugs-all"; //hard-coding for now...
 
             var templateManager = new TemplateEngine();
 

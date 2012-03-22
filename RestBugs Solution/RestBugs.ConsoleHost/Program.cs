@@ -8,7 +8,7 @@ namespace RestBugs.ConsoleHost
     class Program
     {
         static void Main() {
-            var config = new HttpSelfHostConfiguration(new Uri("http://localhost:8800/"));
+            var config = new HttpSelfHostConfiguration(new Uri("http://localhost:9200"));
 
             ServiceConfiguration.Configure(config);
             
