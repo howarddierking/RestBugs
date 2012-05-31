@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Web.Http;
 using Machine.Specifications;
 using Moq;
@@ -63,6 +64,10 @@ namespace RestBugs.Services.Specs
             resultContent = result.Content.ReadAsync().Result;
         };
 
+        It should_have_enum_dto_instance = () => {
+            result.TryGetContentValue<IEnumerable<BugDTO>>(out val).ShouldBeTrue();
+        };
+
         It should_not_be_null = () => result.ShouldNotBeNull();
 
         It should_have_1_bug_in_it = () => resultContent.Count().ShouldEqual(1);
@@ -70,7 +75,7 @@ namespace RestBugs.Services.Specs
         It should_contain_a_bug_with_id_1 = () => resultContent.First().Id.Equals(1);
 
         static WorkingController controller;
-        static HttpResponseMessage<IEnumerable<BugDTO>> result;
+        static HttpResponseMessage result;
         static IEnumerable<BugDTO> resultContent;
     }
 

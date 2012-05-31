@@ -1,0 +1,22 @@
+migration notes
+
+intial steps: 
+* uninstalled all Web API NuGet packages
+* installed web api packages from RC source (\\aspnet\Releases\MVC4-RC\20505\Signed\Packages)
+
+initial build errors
+Error	1	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\QaController.cs	19	16	RestBugs.Services
+Error	2	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\BacklogController.cs	20	16	RestBugs.Services
+Error	3	The type or namespace name 'FormatterContext' could not be found (are you missing a using directive or an assembly reference?)	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Formatters\RazorHtmlMediaTypeFormatter.cs	23	129	RestBugs.Services
+Error	4	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\DoneController.cs	26	16	RestBugs.Services
+Error	5	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\WorkingController.cs	31	16	RestBugs.Services
+Error	6	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\DoneController.cs	32	16	RestBugs.Services
+Error	7	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\QaController.cs	32	16	RestBugs.Services
+Error	8	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\BacklogController.cs	32	16	RestBugs.Services
+Error	9	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\WorkingController.cs	36	16	RestBugs.Services
+
+all of these are related to the fact that there's no more HttpResponseMessage<T> - 
+	new pattern is to return HttpReponseMessage and create it with ApiController.Request::CreateResponse<T> method
+	this also means that I need to rewrite all of my tests that verify both the response message and the value
+		there's a helper on the response called TryGetContentValue<T> for this 
+		it means more test code, but not necessarily the end of the world

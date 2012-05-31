@@ -16,9 +16,10 @@ namespace RestBugs.Services.Services
             _bugRepository = bugRepository;
         }
 
-        public HttpResponseMessage<IEnumerable<BugDTO>>Get()
+        public HttpResponseMessage Get()
         {
-            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(GetResolvedDtos());
+            var response = Request.CreateResponse<IEnumerable<BugDTO>>(GetResolvedDtos());
+
             return response;
         }
 
