@@ -17,8 +17,8 @@ namespace RestBugs.Services.Services
             _bugsRepository = bugsRepository;
         }
 
-        public HttpResponseMessage<IEnumerable<BugDTO>>Get() {
-            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(GetBacklogBugDtos());
+        public HttpResponseMessage Get() {
+            var response = Request.CreateResponse<IEnumerable<BugDTO>>(HttpStatusCode.OK, GetBacklogBugDtos());
             return response;
         }
 
@@ -29,16 +29,16 @@ namespace RestBugs.Services.Services
             return dtos;
         }
 
-        public HttpResponseMessage<IEnumerable<BugDTO>> Post (BugDTO dto, string comments)
+        public HttpResponseMessage Post (BugDTO dto, string comments)
         {
             Bug bug;
             if(dto.Id != 0)
             {
                 bug = _bugsRepository.Get(dto.Id);
-                if(bug == null)
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
+                if (bug == null)
+                    return new HttpResponseMessage(HttpStatusCode.NotFound);
                 bug.Approve();
-                return new HttpResponseMessage<IEnumerable<BugDTO>>(GetBacklogBugDtos());
+                return Request.CreateResponse<IEnumerable<BugDTO>>(HttpStatusCode.OK, GetBacklogBugDtos());
             }
 
             bug = Mapper.Map<BugDTO, Bug>(dto);
@@ -46,7 +46,7 @@ namespace RestBugs.Services.Services
 
             _bugsRepository.Add(bug);
             
-            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(GetBacklogBugDtos(), HttpStatusCode.Created);
+            var response = Request.CreateResponse<IEnumerable<BugDTO>>(HttpStatusCode.Created, GetBacklogBugDtos());
             
             //i still don't like this because it's fragmenting management of my links
             response.Headers.Location = new Uri(HostUriFromRequest(Request), bug.Id.ToString());

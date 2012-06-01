@@ -31,7 +31,9 @@ namespace RestBugs.Services.Specs
                              };
         };
 
-        Because of = () => { workingBugs = controller.Get().Content.ReadAsync().Result; };
+        Because of = () => { 
+            controller.Get().TryGetContentValue<IEnumerable<BugDTO>>(out workingBugs);
+        };
 
         It should_not_be_null = () => workingBugs.ShouldNotBeNull();
 
@@ -60,15 +62,13 @@ namespace RestBugs.Services.Specs
 
         Because of = () =>
         {
-            result = controller.Post(1, "activating bug 1");
-            resultContent = result.Content.ReadAsync().Result;
+           result = controller.Post(1, "activating bug 1");
+           result.TryGetContentValue<IEnumerable<BugDTO>>(out resultContent).ShouldBeTrue();
         };
 
-        It should_have_enum_dto_instance = () => {
-            result.TryGetContentValue<IEnumerable<BugDTO>>(out val).ShouldBeTrue();
-        };
+        It should_not_be_null_result = () => result.ShouldNotBeNull();
 
-        It should_not_be_null = () => result.ShouldNotBeNull();
+        It should_not_be_null_result_content = () => resultContent.ShouldNotBeNull();
 
         It should_have_1_bug_in_it = () => resultContent.Count().ShouldEqual(1);
 

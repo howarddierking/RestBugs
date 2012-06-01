@@ -3,6 +3,7 @@ using Ninject;
 using RestBugs.Services.Formatters;
 using RestBugs.Services.MessageHandlers;
 using RestBugs.Services.Model;
+using RestBugs.Services.Infrastructure;
 
 namespace RestBugs.Services
 {
@@ -18,7 +19,7 @@ namespace RestBugs.Services
             var kernel = new StandardKernel();
             kernel.Bind<IBugRepository>().To<StaticBugRepository>();
 
-            config.ServiceResolver.SetResolver(t => kernel.TryGet(t), t => kernel.GetAll(t));
+            config.DependencyResolver = new NinjectDependencyResolver(kernel);
 
             AutoMapperConfig.Configure();
         }    

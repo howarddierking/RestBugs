@@ -20,3 +20,10 @@ all of these are related to the fact that there's no more HttpResponseMessage<T>
 	this also means that I need to rewrite all of my tests that verify both the response message and the value
 		there's a helper on the response called TryGetContentValue<T> for this 
 		it means more test code, but not necessarily the end of the world
+
+I removed the code that threw an exception for 404 status codes and instead simply created a new HttpResponseMessage with a 404 status code
+
+looks like the signature changed on mediatypeformatter
+	protected override Task OnWriteToStreamAsync(Type type, object value, Stream stream, HttpContentHeaders contentHeaders, FormatterContext formatterContext, TransportContext transportContext)
+
+once I changed my services to return HttpResponseMessage rather than HttpResponseMessage<T>, I also ended up needing to fix up all of my unit tests

@@ -15,12 +15,12 @@ namespace RestBugs.Services.Formatters
             SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
         }
 
-        protected override bool CanWriteType(Type type)
+        public override bool CanWriteType(Type type)
         {
             return true;
         }
 
-        protected override Task OnWriteToStreamAsync(Type type, object value, Stream stream, HttpContentHeaders contentHeaders, FormatterContext formatterContext, TransportContext transportContext)
+        public override Task WriteToStreamAsync(Type type, object value, Stream stream, HttpContentHeaders contentHeaders, TransportContext transportContext)
         {
             return Task.Factory.StartNew(() => WriteStream(value, stream));
         }
@@ -43,6 +43,11 @@ namespace RestBugs.Services.Formatters
                 streamWriter.Write(currentTemplate.Buffer.ToString());
 
             currentTemplate.Buffer.Clear();
+        }
+
+        public override bool CanReadType(Type type)
+        {
+            throw new NotImplementedException();
         }
     }
 }

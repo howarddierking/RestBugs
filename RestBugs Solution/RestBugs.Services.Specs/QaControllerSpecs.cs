@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Machine.Specifications;
 using Moq;
+using System.Net.Http;
 using RestBugs.Services.Model;
 using RestBugs.Services.Services;
 using It = Machine.Specifications.It;
@@ -19,7 +20,7 @@ namespace RestBugs.Services.Specs
             controller = new QaController(mockRepo.Object);
         };
 
-        Because of = () => { resolvedBugs = controller.Get().Content.ReadAsync().Result; };
+        Because of = () => { controller.Get().TryGetContentValue<IEnumerable<BugDTO>>(out resolvedBugs); };
 
         It should_not_be_null = () => resolvedBugs.ShouldNotBeNull();
 
