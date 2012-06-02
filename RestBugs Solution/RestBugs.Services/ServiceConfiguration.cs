@@ -14,7 +14,7 @@ namespace RestBugs.Services
             config.Routes.MapHttpRoute("def", "bugs/{controller}", new {controller = "Index"});
           
             config.Formatters.Add(new RazorHtmlMediaTypeFormatter());
-            config.MessageHandlers.Add(new EtagMessageHandler());
+            //config.MessageHandlers.Add(new EtagMessageHandler());
 
             var kernel = new StandardKernel();
             kernel.Bind<IBugRepository>().To<StaticBugRepository>();

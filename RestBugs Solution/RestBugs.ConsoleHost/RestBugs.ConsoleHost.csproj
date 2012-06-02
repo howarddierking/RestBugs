@@ -79,7 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RestBugs.Services\RestBugs.Services.csproj">
-      <Project>{1FE6F881-2365-418C-AD5C-ED987F07F393}</Project>
+      <Project>{1fe6f881-2365-418c-ad5c-ed987f07f393}</Project>
       <Name>RestBugs.Services</Name>
     </ProjectReference>
   </ItemGroup>

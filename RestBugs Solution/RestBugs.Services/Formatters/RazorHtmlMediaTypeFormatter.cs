@@ -39,9 +39,12 @@ namespace RestBugs.Services.Formatters
             currentTemplate.Model = value;
             currentTemplate.Execute();
 
-            using (var streamWriter = new StreamWriter(stream))
-                streamWriter.Write(currentTemplate.Buffer.ToString());
-
+            //using (var streamWriter = new StreamWriter(stream)) {
+            var streamWriter = new StreamWriter(stream);
+            streamWriter.Write(currentTemplate.Buffer.ToString());
+            streamWriter.Flush();
+            //}
+            
             currentTemplate.Buffer.Clear();
         }
 

@@ -19,6 +19,11 @@ namespace RestBugs.Services.Services
 
         public HttpResponseMessage Get() {
             var response = Request.CreateResponse<IEnumerable<BugDTO>>(HttpStatusCode.OK, GetBacklogBugDtos());
+
+            var n = Configuration.Services.GetContentNegotiator();
+            var n_res = n.Negotiate(typeof(IEnumerable<BugDTO>), Request, Configuration.Formatters);
+
+
             return response;
         }
 
