@@ -33,3 +33,6 @@ major changes in dependency resolver - need to get additional guidance on what t
 looks like there was some bug in the way I was managing my stream/stream writer inside my razor formatter
 
 still an issue with content negotiation - especially when the user agent is a browser.  It seems to have something to do with how we handle wildcard values in the accept header
+	looks like upgrading to the nightly package builds fixed that issue
+
+now an issue where action selection is failing for posts that rely on model binding to include custom types as parameters

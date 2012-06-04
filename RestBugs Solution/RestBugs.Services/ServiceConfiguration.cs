@@ -4,6 +4,7 @@ using RestBugs.Services.Formatters;
 using RestBugs.Services.MessageHandlers;
 using RestBugs.Services.Model;
 using RestBugs.Services.Infrastructure;
+using System.Web.Http.Controllers;
 
 namespace RestBugs.Services
 {
@@ -18,6 +19,7 @@ namespace RestBugs.Services
 
             var kernel = new StandardKernel();
             kernel.Bind<IBugRepository>().To<StaticBugRepository>();
+            kernel.Bind<IActionValueBinder>().To<MvcActionValueBinder>();
 
             config.DependencyResolver = new NinjectDependencyResolver(kernel);
 

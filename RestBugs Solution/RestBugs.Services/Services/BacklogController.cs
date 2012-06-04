@@ -34,7 +34,7 @@ namespace RestBugs.Services.Services
             return dtos;
         }
 
-        public HttpResponseMessage Post (BugDTO dto, string comments)
+        public HttpResponseMessage Post (BugDTO dto, string comments=null)
         {
             Bug bug;
             if(dto.Id != 0)

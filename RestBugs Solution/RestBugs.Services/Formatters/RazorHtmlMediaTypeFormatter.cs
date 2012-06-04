@@ -20,9 +20,9 @@ namespace RestBugs.Services.Formatters
             return true;
         }
 
-        public override Task WriteToStreamAsync(Type type, object value, Stream stream, HttpContentHeaders contentHeaders, TransportContext transportContext)
+        public override Task WriteToStreamAsync(Type type, object value, Stream writeStream, System.Net.Http.HttpContent content, TransportContext transportContext)
         {
-            return Task.Factory.StartNew(() => WriteStream(value, stream));
+            return Task.Factory.StartNew(() => WriteStream(value, writeStream));
         }
 
         static void WriteStream(object value, Stream stream)
