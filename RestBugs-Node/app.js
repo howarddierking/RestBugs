@@ -71,7 +71,9 @@ app.get('/bugs/backlog', function(req, res){
 
 app.post('/bugs/backlog', function(req, res){
 	//this could be either a create or an update
+	//TODO: replace with upsert-style call
 	var id = req.body.id;
+	
 	if(id===undefined){
 		//create a new bug
 		console.log('create a new bug');
@@ -89,6 +91,18 @@ app.post('/bugs/backlog', function(req, res){
 	{
 		//update
 		console.log('move bug ' + id + ' to backlog');
+
+		db.bugs.find({_id:id}, function(err, doc){
+			doc.toBacklog(req.body.comments);
+
+			db.bugs.update({_id:id}, doc, function(err, updatedDoc){
+				db.bugs.find({status:'Backlog'}, function(err, docs){
+					res.render('bugs-all.html', { 
+					title: "Backlog", 
+					model: { bugs : docs }});	
+				});
+			});
+		});
 	}
 });
 
@@ -101,7 +115,19 @@ app.get('/bugs/working', function(req, res){
 });
 
 app.post('/bugs/working', function(req, res){
+	db.bugs.find({_id:req.body.id}, function(err, doc){
+		
+		doc.prototype = new Bug();
+		doc.activate(req.body.comments);
 
+		db.bugs.update({_id:req.body.id}, doc, function(err, updatedDoc){
+			db.bugs.find({status:'Working'}, function(err, docs){
+				res.render('bugs-all.html', { 
+				title: "Working", 
+				model: { bugs : docs }});	
+			});
+		});
+	});
 });
 
 app.get('/bugs/qa', function(req, res){
@@ -113,7 +139,17 @@ app.get('/bugs/qa', function(req, res){
 });
 
 app.post('/bugs/qa', function(req, res){
+	db.bugs.find({_id:req.body.id}, function(err, doc){
+		doc.resolve(req.body.comments);
 
+		db.bugs.update({_id:req.body.id}, doc, function(err, updatedDoc){
+			db.bugs.find({status:'QA'}, function(err, docs){
+				res.render('bugs-all.html', { 
+				title: "QA", 
+				model: { bugs : docs }});	
+			});
+		});
+	});
 });
 
 app.get('/bugs/done', function(req, res){
@@ -125,7 +161,17 @@ app.get('/bugs/done', function(req, res){
 });
 
 app.post('/bugs/done', function(req, res){
+	db.bugs.find({_id:req.body.id}, function(err, doc){
+		doc.close(req.body.comments);
 
+		db.bugs.update({_id:req.body.id}, doc, function(err, updatedDoc){
+			db.bugs.find({status:'Done'}, function(err, docs){
+				res.render('bugs-all.html', { 
+				title: "Done", 
+				model: { bugs : docs }});	
+			});
+		});
+	});
 });
 
 // first, let's remove any initial values in the database
