@@ -1,0 +1,136 @@
+var express = require('express');
+
+var databaseUrl = "restbugs";
+var collections = ["bugs"];
+var db = require('mongojs').connect(databaseUrl, collections);
+
+var app = express.createServer();
+app.listen(9200);
+
+app.configure(function(){
+	app.register('.html', require('ejs'));
+	app.set('view options', {
+		layout: false
+	});
+	app.use(express.bodyParser());	//where is app.use defined and what does it do??
+});
+
+function Bug(title, description) {
+	var self = this;		// this seems to be necessary so that updateStatus works - WHY???
+	this.title = title;
+	this.description = description;
+	this.assignedTo = '';
+	this.status = '';
+	this.history = [];
+
+	// I *think* this is the right way to make privately scoped functions for the Bug object
+	function addToHistory(comments, stateChanges){
+		self.history.push({
+			addedOn: new Date(),
+			comments: comments,
+			changes: stateChanges
+		});
+	};
+
+	function updateStatus(status, comments){
+		self.status = status;
+		addToHistory(comments, {status : self.status});
+	};
+
+	// I *think* this is the right way to make privelleged functions for the Bug object
+	this.activate = function(comments){
+		updateStatus('Working', comments);
+	};
+
+	this.resolve = function(comments){
+		updateStatus('QA', comments);
+	};
+
+	this.close = function(comments){
+		updateStatus('Done', comments);
+	};
+
+	this.toBacklog = function(comments){
+		updateStatus('Backlog', comments);
+	};
+
+	this.toBacklog("created");
+};
+
+app.get('/bugs', function(req, res){
+	res.render('bugs-all.html', { title: "Bugs API root"});
+});
+
+app.get('/bugs/backlog', function(req, res){
+	db.bugs.find({status:'Backlog'}, function(err, docs){
+		res.render('bugs-all.html', { 
+			title: "Backlog", 
+			model: { bugs : docs }});	
+	});
+});
+
+app.post('/bugs/backlog', function(req, res){
+	//this could be either a create or an update
+	var id = req.body.id;
+	if(id===undefined){
+		//create a new bug
+		console.log('create a new bug');
+		db.bugs.save(new Bug(req.body.title, req.body.description), function(err, savedDoc){
+			db.bugs.find({status:'Backlog'}, function(err, docs){
+				res.header('Location', req.headers.host + '/bugs/' + savedDoc._id);
+				res.render('bugs-all.html', { 
+				status: 201,
+				title: "Backlog", 
+				model: { bugs : docs }});	
+			});
+		});
+	}
+	else
+	{
+		//update
+		console.log('move bug ' + id + ' to backlog');
+	}
+});
+
+app.get('/bugs/working', function(req, res){
+	db.bugs.find({status:'Working'}, function(err, docs){
+		res.render('bugs-all.html', { 
+			title: "Working", 
+			model: { bugs : docs }});	
+	});
+});
+
+app.post('/bugs/working', function(req, res){
+
+});
+
+app.get('/bugs/qa', function(req, res){
+	db.bugs.find({status:'QA'}, function(err, docs){
+		res.render('bugs-all.html', { 
+			title: "QA", 
+			model: { bugs : docs }});	
+	});
+});
+
+app.post('/bugs/qa', function(req, res){
+
+});
+
+app.get('/bugs/done', function(req, res){
+	db.bugs.find({status:'Done'}, function(err, docs){
+		res.render('bugs-all.html', { 
+			title: "Done", 
+			model: { bugs : docs }});	
+	});
+});
+
+app.post('/bugs/done', function(req, res){
+
+});
+
+// first, let's remove any initial values in the database
+db.bugs.remove({});
+
+// let's initialize the database with some bugs
+db.bugs.save(new Bug("first bug", "a bug description"));
+db.bugs.save(new Bug("second bug", "another bug description"));
