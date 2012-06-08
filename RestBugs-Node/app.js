@@ -15,14 +15,9 @@ app.configure(function(){
 	app.use(express.bodyParser());	//where is app.use defined and what does it do??
 });
 
-function Bug(title, description) {
+function Bug(config) {
 	var self = this;		// this seems to be necessary so that updateStatus works - WHY???
-	this.title = title;
-	this.description = description;
-	this.assignedTo = '';
-	this.status = '';
-	this.history = [];
-
+	
 	// I *think* this is the right way to make privately scoped functions for the Bug object
 	function addToHistory(comments, stateChanges){
 		self.history.push({
@@ -54,7 +49,24 @@ function Bug(title, description) {
 		updateStatus('Backlog', comments);
 	};
 
-	this.toBacklog("created");
+	//todo: null checking on config
+	//title, description, jsonObj
+	if(config.jsonObj === undefined){
+		//create a new instance
+		this.title = config.title;
+		this.description = config.description;
+		this.assignedTo = '';
+		this.status = '';
+		this.history = [];
+
+		this.toBacklog("created");
+	} else{
+		this.title = config.jsonObj.title;
+		this.description = config.jsonObj.description;
+		this.assignedTo = config.jsonObj.assignedTo;
+		this.status = config.jsonObj.status;
+		this.history = config.jsonObj.history===undefined ? [] : config.jsonObj.history;
+	}
 };
 
 app.get('/bugs', function(req, res){
@@ -77,7 +89,7 @@ app.post('/bugs/backlog', function(req, res){
 	if(id===undefined){
 		//create a new bug
 		console.log('create a new bug');
-		db.bugs.save(new Bug(req.body.title, req.body.description), function(err, savedDoc){
+		db.bugs.save(new Bug({title: req.body.title, description: req.body.description}), function(err, savedDoc){
 			db.bugs.find({status:'Backlog'}, function(err, docs){
 				res.header('Location', req.headers.host + '/bugs/' + savedDoc._id);
 				res.render('bugs-all.html', { 
@@ -116,11 +128,11 @@ app.get('/bugs/working', function(req, res){
 
 app.post('/bugs/working', function(req, res){
 	db.bugs.find({_id:req.body.id}, function(err, doc){
+		var b = new Bug({jsonObj: doc});
 		
-		doc.prototype = new Bug();
-		doc.activate(req.body.comments);
+		b.activate(req.body.comments);
 
-		db.bugs.update({_id:req.body.id}, doc, function(err, updatedDoc){
+		db.bugs.update({_id:req.body.id}, b, function(err, updatedDoc){
 			db.bugs.find({status:'Working'}, function(err, docs){
 				res.render('bugs-all.html', { 
 				title: "Working", 
@@ -178,5 +190,5 @@ app.post('/bugs/done', function(req, res){
 db.bugs.remove({});
 
 // let's initialize the database with some bugs
-db.bugs.save(new Bug("first bug", "a bug description"));
-db.bugs.save(new Bug("second bug", "another bug description"));
+db.bugs.save(new Bug({title: "first bug", description: "a bug description"}));
+db.bugs.save(new Bug({title: "second bug", description: "another bug description"}));
