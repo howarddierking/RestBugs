@@ -5,14 +5,12 @@
     <body>
         <h1></h1>
         <div id="bugs">
-            
             <% if(typeof(model) != 'undefined') { %>
             
                 <ul class="all">
-
                     <% 
-                    for(var i=0; i < model.bugs.length; i++) { 
-                        var bug = model.bugs[i];
+                        for(var i=0; i < model.length; i++) { 
+                            var bug = model[i];
                     %>
 
                         <li>
@@ -73,7 +71,6 @@
                         </li>
 
                     <% } %>
-
                 </ul>
 
             <% } %>
