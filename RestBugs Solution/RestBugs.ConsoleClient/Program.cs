@@ -31,10 +31,15 @@ namespace RestBugs.ConsoleClient
 
         static HttpClient _client;
 
-        static void Main() {
+        static void Main(string[] args) {
+            int portNumber = 9200;
+            if(args.Length > 0) {
+                int.TryParse(args[0], out portNumber);
+            }
+
             var clientHandler = new HttpClientHandler();
             //_client = new HttpClient(clientHandler) { BaseAddress = new Uri("http://ipv4.fiddler:9200") };
-            _client = new HttpClient(clientHandler) { BaseAddress = new Uri("http://localhost:9200") };
+            _client = new HttpClient(clientHandler) { BaseAddress = new Uri(string.Format("http://localhost:{0}", portNumber)) };
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
 
             //loop is as follows
