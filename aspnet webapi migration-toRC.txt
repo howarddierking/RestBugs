@@ -1,0 +1,38 @@
+migration notes
+
+intial steps: 
+* uninstalled all Web API NuGet packages
+* installed web api packages from RC source (\\aspnet\Releases\MVC4-RC\20505\Signed\Packages)
+
+initial build errors
+Error	1	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\QaController.cs	19	16	RestBugs.Services
+Error	2	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\BacklogController.cs	20	16	RestBugs.Services
+Error	3	The type or namespace name 'FormatterContext' could not be found (are you missing a using directive or an assembly reference?)	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Formatters\RazorHtmlMediaTypeFormatter.cs	23	129	RestBugs.Services
+Error	4	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\DoneController.cs	26	16	RestBugs.Services
+Error	5	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\WorkingController.cs	31	16	RestBugs.Services
+Error	6	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\DoneController.cs	32	16	RestBugs.Services
+Error	7	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\QaController.cs	32	16	RestBugs.Services
+Error	8	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\BacklogController.cs	32	16	RestBugs.Services
+Error	9	The non-generic type 'System.Net.Http.HttpResponseMessage' cannot be used with type arguments	D:\Programming\github\howarddierking\RestBugs\RestBugs Solution\RestBugs.Services\Services\WorkingController.cs	36	16	RestBugs.Services
+
+all of these are related to the fact that there's no more HttpResponseMessage<T> - 
+	new pattern is to return HttpReponseMessage and create it with ApiController.Request::CreateResponse<T> method
+	this also means that I need to rewrite all of my tests that verify both the response message and the value
+		there's a helper on the response called TryGetContentValue<T> for this 
+		it means more test code, but not necessarily the end of the world
+
+I removed the code that threw an exception for 404 status codes and instead simply created a new HttpResponseMessage with a 404 status code
+
+looks like the signature changed on mediatypeformatter
+	protected override Task OnWriteToStreamAsync(Type type, object value, Stream stream, HttpContentHeaders contentHeaders, FormatterContext formatterContext, TransportContext transportContext)
+
+once I changed my services to return HttpResponseMessage rather than HttpResponseMessage<T>, I also ended up needing to fix up all of my unit tests
+
+major changes in dependency resolver - need to get additional guidance on what these were all about
+
+looks like there was some bug in the way I was managing my stream/stream writer inside my razor formatter
+
+still an issue with content negotiation - especially when the user agent is a browser.  It seems to have something to do with how we handle wildcard values in the accept header
+	looks like upgrading to the nightly package builds fixed that issue
+
+now an issue where action selection is failing for posts that rely on model binding to include custom types as parameters

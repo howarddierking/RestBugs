@@ -13,7 +13,7 @@ namespace RestBugs.Services.Infrastructure
             var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
             response.Content = new StringContent(message);
 
-            actionExecutedContext.Result = response;
+            actionExecutedContext.Response = response;
         }
     }
 }

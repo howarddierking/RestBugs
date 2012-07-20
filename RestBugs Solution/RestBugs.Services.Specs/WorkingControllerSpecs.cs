@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Web.Http;
 using Machine.Specifications;
 using Moq;
@@ -30,7 +31,9 @@ namespace RestBugs.Services.Specs
                              };
         };
 
-        Because of = () => { workingBugs = controller.Get().Content.ReadAsync().Result; };
+        Because of = () => { 
+            controller.Get().TryGetContentValue<IEnumerable<BugDTO>>(out workingBugs);
+        };
 
         It should_not_be_null = () => workingBugs.ShouldNotBeNull();
 
@@ -59,18 +62,20 @@ namespace RestBugs.Services.Specs
 
         Because of = () =>
         {
-            result = controller.Post(1, "activating bug 1");
-            resultContent = result.Content.ReadAsync().Result;
+           result = controller.Post(1, "activating bug 1");
+           result.TryGetContentValue<IEnumerable<BugDTO>>(out resultContent).ShouldBeTrue();
         };
 
-        It should_not_be_null = () => result.ShouldNotBeNull();
+        It should_not_be_null_result = () => result.ShouldNotBeNull();
+
+        It should_not_be_null_result_content = () => resultContent.ShouldNotBeNull();
 
         It should_have_1_bug_in_it = () => resultContent.Count().ShouldEqual(1);
 
         It should_contain_a_bug_with_id_1 = () => resultContent.First().Id.Equals(1);
 
         static WorkingController controller;
-        static HttpResponseMessage<IEnumerable<BugDTO>> result;
+        static HttpResponseMessage result;
         static IEnumerable<BugDTO> resultContent;
     }
 

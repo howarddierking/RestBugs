@@ -3,6 +3,8 @@ using Ninject;
 using RestBugs.Services.Formatters;
 using RestBugs.Services.MessageHandlers;
 using RestBugs.Services.Model;
+using RestBugs.Services.Infrastructure;
+using System.Web.Http.Controllers;
 
 namespace RestBugs.Services
 {
@@ -13,12 +15,13 @@ namespace RestBugs.Services
             config.Routes.MapHttpRoute("def", "bugs/{controller}", new {controller = "Index"});
           
             config.Formatters.Add(new RazorHtmlMediaTypeFormatter());
-            config.MessageHandlers.Add(new EtagMessageHandler());
+            //config.MessageHandlers.Add(new EtagMessageHandler());
 
             var kernel = new StandardKernel();
             kernel.Bind<IBugRepository>().To<StaticBugRepository>();
+            kernel.Bind<IActionValueBinder>().To<MvcActionValueBinder>();
 
-            config.ServiceResolver.SetResolver(t => kernel.TryGet(t), t => kernel.GetAll(t));
+            config.DependencyResolver = new NinjectDependencyResolver(kernel);
 
             AutoMapperConfig.Configure();
         }    

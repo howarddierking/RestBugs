@@ -28,21 +28,20 @@ namespace RestBugs.Services.Services
             return dtos;
         }
 
-        public HttpResponseMessage<IEnumerable<BugDTO>>Get() {
-            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(GetDtos());
+        public HttpResponseMessage Get() {
+            var response = Request.CreateResponse<IEnumerable<BugDTO>>(HttpStatusCode.OK, GetDtos());
             return response;
         }
 
-        public HttpResponseMessage<IEnumerable<BugDTO>> Post(int id, string comments)
+        public HttpResponseMessage Post(int id, string comments)
         {
             Bug bug = _bugRepository.Get(id); //bugId
             if (bug == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return new HttpResponseMessage(HttpStatusCode.NotFound);
 
             bug.Activate(comments);
 
-            var response = new HttpResponseMessage<IEnumerable<BugDTO>>(GetDtos()) { StatusCode = HttpStatusCode.OK };
-            
+            var response = Request.CreateResponse<IEnumerable<BugDTO>>(HttpStatusCode.OK, GetDtos());
             return response;
         }
     }

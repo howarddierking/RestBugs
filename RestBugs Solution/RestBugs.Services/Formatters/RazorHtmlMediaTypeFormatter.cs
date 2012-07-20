@@ -15,14 +15,14 @@ namespace RestBugs.Services.Formatters
             SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
         }
 
-        protected override bool CanWriteType(Type type)
+        public override bool CanWriteType(Type type)
         {
             return true;
         }
 
-        protected override Task OnWriteToStreamAsync(Type type, object value, Stream stream, HttpContentHeaders contentHeaders, FormatterContext formatterContext, TransportContext transportContext)
+        public override Task WriteToStreamAsync(Type type, object value, Stream writeStream, System.Net.Http.HttpContent content, TransportContext transportContext)
         {
-            return Task.Factory.StartNew(() => WriteStream(value, stream));
+            return Task.Factory.StartNew(() => WriteStream(value, writeStream));
         }
 
         static void WriteStream(object value, Stream stream)
@@ -39,10 +39,18 @@ namespace RestBugs.Services.Formatters
             currentTemplate.Model = value;
             currentTemplate.Execute();
 
-            using (var streamWriter = new StreamWriter(stream))
-                streamWriter.Write(currentTemplate.Buffer.ToString());
-
+            //using (var streamWriter = new StreamWriter(stream)) {
+            var streamWriter = new StreamWriter(stream);
+            streamWriter.Write(currentTemplate.Buffer.ToString());
+            streamWriter.Flush();
+            //}
+            
             currentTemplate.Buffer.Clear();
+        }
+
+        public override bool CanReadType(Type type)
+        {
+            throw new NotImplementedException();
         }
     }
 }

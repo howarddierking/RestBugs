@@ -1,10 +1,9 @@
 ﻿using RestBugs.Services;
+using System;
+using System.Web.Http.SelfHost;
 
 namespace RestBugs.ConsoleHost
 {
-    using System;
-    using System.Web.Http.SelfHost;
-
     class Program
     {
         static void Main() {
