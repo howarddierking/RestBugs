@@ -1,7 +1,6 @@
 ﻿using System.Web.Http;
 using Ninject;
 using RestBugs.Services.Formatters;
-using RestBugs.Services.MessageHandlers;
 using RestBugs.Services.Model;
 using RestBugs.Services.Infrastructure;
 using System.Web.Http.Controllers;
