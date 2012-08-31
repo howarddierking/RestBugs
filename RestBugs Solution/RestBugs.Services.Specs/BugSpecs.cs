@@ -3,6 +3,7 @@ using RestBugs.Services.Model;
 
 namespace RestBugs.Services.Specs
 {
+    [Subject(typeof(Bug))]
     class when_creating_a_new_bug
     {
         Because of = () => { bug = new Bug(); };

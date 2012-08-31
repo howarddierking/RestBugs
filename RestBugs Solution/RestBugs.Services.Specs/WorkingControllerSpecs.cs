@@ -1,104 +1,94 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Web.Http;
+using Machine.Fakes;
 using Machine.Specifications;
-using Moq;
 using RestBugs.Services.Model;
 using RestBugs.Services.Services;
 using It = Machine.Specifications.It;
 
 namespace RestBugs.Services.Specs
 {
-    public class when_getting_all_working_bugs
+    [Subject(typeof(WorkingController))]
+    public class when_getting_all_working_bugs : WithSubject<WorkingController>
     {
-        Establish context = () =>
-        {
-            AutoMapperConfig.Configure();
+        Establish context = () => {
+                                With(new DefaultControllerBehaviorConfig(Subject));
 
-            var mockRepo = new Mock<IBugRepository>();
-            mockRepo.Setup(r => r.GetAll()).Returns(BugHelper.TestBugList);
-            controller = new WorkingController(mockRepo.Object);
+                                expectedResult = new List<BugDTO> {
+                                    new BugDTO {Title = "Bug 3", Status = "Working"},
+                                    new BugDTO {Title = "Bug 2", Status = "Working"},
+                                    new BugDTO {Title = "Bug 1", Status = "Working"}
+                                };
+                            };
 
-            expectedResult = new List<BugDTO>
-                             {
-                                 new BugDTO {Title="Bug 1", Status = "Working"},
-                                 new BugDTO {Title="Bug 2", Status = "Working"},
-                                 new BugDTO {Title="Bug 3", Status = "Working"}
-                             };
-        };
-
-        Because of = () => { 
-            controller.Get().TryGetContentValue<IEnumerable<BugDTO>>(out workingBugs);
-        };
+        Because of = () => Subject.Get().TryGetContentValue(out workingBugs);
 
         It should_not_be_null = () => workingBugs.ShouldNotBeNull();
 
         It should_return_3_bugs = () => workingBugs.Count().ShouldEqual(3);
 
-        It should_sort_bugs_in_order_of_priority_then_rank = () => workingBugs.SequenceEqual(expectedResult);
+        It should_sort_bugs_in_order_of_priority_then_rank = () => workingBugs.ShouldEqual(expectedResult);
 
         static IEnumerable<BugDTO> workingBugs;
         static IEnumerable<BugDTO> expectedResult;
-        static WorkingController controller;
     }
 
-    public class when_posting_bug_to_working
+    [Subject(typeof(WorkingController))]
+    public class when_posting_bug_to_working : WithSubject<WorkingController>
     {
-        Establish context = () =>
-        {
-            AutoMapperConfig.Configure();
+        Establish context = () => {
+                                With(new DefaultControllerBehaviorConfig(Subject));
 
-            var testBug = new Bug { Id = 1 };
-            var mockRepo = new Mock<IBugRepository>();
-            mockRepo.Setup(r => r.Get(1)).Returns(testBug);
-            mockRepo.Setup(r => r.GetAll()).Returns(new[] { testBug });
+                                var testBug = new Bug {Id = 1};
 
-            controller = new WorkingController(mockRepo.Object);
-        };
+                                The<IBugRepository>()
+                                    .WhenToldTo(r => r.Get(1))
+                                    .Return(testBug);
 
-        Because of = () =>
-        {
-           result = controller.Post(1, "activating bug 1");
-           result.TryGetContentValue<IEnumerable<BugDTO>>(out resultContent).ShouldBeTrue();
-        };
+                                The<IBugRepository>()
+                                    .WhenToldTo(r => r.GetAll())
+                                    .Return(new[] {testBug});
+                            };
 
-        It should_not_be_null_result = () => result.ShouldNotBeNull();
+        Because of = () => {
+                         responseMessage = Subject.Post(1, "activating bug 1");
+                         result = responseMessage.TryGetContentValue(out resultContent);
+                     };
+
+        It should_succeed_in_getting_result_content = () => result.ShouldBeTrue();
+
+        It should_not_be_null_result = () => responseMessage.ShouldNotBeNull();
 
         It should_not_be_null_result_content = () => resultContent.ShouldNotBeNull();
 
         It should_have_1_bug_in_it = () => resultContent.Count().ShouldEqual(1);
 
-        It should_contain_a_bug_with_id_1 = () => resultContent.First().Id.Equals(1);
+        It should_contain_a_bug_with_id_1 = () => resultContent.First().Id.ShouldEqual(1);
 
-        static WorkingController controller;
-        static HttpResponseMessage result;
+        static HttpResponseMessage responseMessage;
         static IEnumerable<BugDTO> resultContent;
+        static bool result;
     }
 
-    public class when_posting_nonexistant_bug_to_working
+    [Subject(typeof(WorkingController))]
+    public class when_posting_nonexistant_bug_to_working : WithSubject<WorkingController>
     {
-        Establish context = () =>
-        {
-            AutoMapperConfig.Configure();
+        Establish context = () => {
+                                AutoMapperConfig.Configure();
 
-            var mockRepo = new Mock<IBugRepository>();
-            mockRepo.Setup(r => r.Get(100)).Returns(null as Bug);
-            controller = new WorkingController(mockRepo.Object);
-        };
+                                The<IBugRepository>()
+                                    .WhenToldTo(r => r.Get(100))
+                                    .Return(null as Bug);
+                            };
 
-        Because of = () => Exception = Catch.Exception(() => controller.Post(100, "activating bug 1"));
+        Because of = () => responseMessage = Subject.Post(100, "activating bug 1");
 
-        It should_fail = () => Exception.ShouldNotBeNull();
+        It should_return_response_message = () => responseMessage.ShouldNotBeNull();
 
-        It should_be_http_exception = () => Exception.ShouldBeOfType(typeof(HttpResponseException));
-
-        It should_throw_http_404 = () => ((HttpResponseException)Exception).Response.StatusCode.ShouldEqual(HttpStatusCode.NotFound);
-
-        static WorkingController controller;
-        static Exception Exception;
+        It should_have_404_status_code = () => responseMessage.StatusCode.ShouldEqual(HttpStatusCode.NotFound);
+        
+        static HttpResponseMessage responseMessage;
     }
 }
