@@ -14,7 +14,8 @@
     {
     @:    {
     @:      "type" : "move to working",
-    @:      "action" : "/bugs/working?id=@bug.Id{&comments}",
+    @:      "href" : "/bugs/working",
+    @:      "template" : "id=@bug.Id{&comments}",
     @:      "method" : "POST",
     @:    }
     }
@@ -22,12 +23,14 @@
     {
     @:    {
     @:      "type" : "move to backlog",
-    @:      "action" : "/bugs/backlog?id=@bug.Id{&comments}",
+    @:      "href" : "/bugs/backlog",
+    @:      "template" : "id=@bug.Id{&comments}",
     @:      "method" : "POST",
     @:    },
     @:    {
     @:      "type" : "move qa next",
-    @:      "action" : "/bugs/qa?id=@bug.Id{&comments}",
+    @:      "href" : "/bugs/qa",
+    @:      "template" : "id=@bug.Id{&comments}",
     @:      "method" : "POST",
     @:    }
     }
@@ -35,7 +38,7 @@
     {
     @:    {
     @:      "type" : "move working",
-    @:      "action" : "/bugs/working?id=@bug.Id{&comments}",
+    @:      "href" : "/bugs/working?id=@bug.Id{&comments}",
     @:      "method" : "POST",
     @:    }
     }
@@ -43,12 +46,14 @@
     {
     @:    {
     @:      "type" : "move done next",
-    @:      "action" : "/bugs/done?id=@bug.Id{&comments}",
+    @:      "href" : "/bugs/done",
+    @:      "template" : "id=@bug.Id{&comments}",
     @:      "method" : "POST",
     @:    },
     @:    {
     @:      "type" : "move working",
-    @:      "action" : "/bugs/working?id=@bug.Id{&comments}",
+    @:      "href" : "/bugs/working",
+    @:      "template" : "id=@bug.Id{&comments}",
     @:      "method" : "POST",
     @:    }
     }
@@ -58,13 +63,11 @@
 }
   ],
   "forms" : [ 
-  @if (Model == null) 
   {
-  @:{
-  @:  "type" : "new backlog",
-  @:  "action" : "/bugs/done?id={&title,description}",
-  @:  "method" : "POST",
-  @:}
+    "type" : "new backlog",
+    "href" : "/bugs/backlog{?title,description}",
+    "template" : "{&title,description}",
+    "method" : "POST",
   }   
   ],
   "links" : [
