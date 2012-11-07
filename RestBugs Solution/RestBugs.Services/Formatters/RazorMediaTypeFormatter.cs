@@ -8,16 +8,21 @@ using RestBugs.Services.Infrastructure;
 
 namespace RestBugs.Services.Formatters
 {
-    public class RazorHtmlMediaTypeFormatter : MediaTypeFormatter
+    public class RazorMediaTypeFormatter<T> : MediaTypeFormatter
     {
-        public RazorHtmlMediaTypeFormatter()
+        private string _template;
+
+        public RazorMediaTypeFormatter(string template, params MediaTypeHeaderValue[] mediaTypes)
         {
-            SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
+            foreach (var mediaType in mediaTypes)
+                SupportedMediaTypes.Add(mediaType);
+
+            _template = template;
         }
 
         public override bool CanWriteType(Type type)
         {
-            return true;
+            return (type == typeof(T) || type.IsSubclassOf(typeof(T)));
         }
 
         public override Task WriteToStreamAsync(Type type, object value, Stream writeStream, System.Net.Http.HttpContent content, TransportContext transportContext)
@@ -25,15 +30,15 @@ namespace RestBugs.Services.Formatters
             return Task.Factory.StartNew(() => WriteStream(value, writeStream));
         }
 
-        static void WriteStream(object value, Stream stream)
+        void WriteStream(object value, Stream stream)
         {
-            const string razorTemplate = "bugs-all"; //hard-coding for now...
+            //const string razorTemplate = "bugs-all"; //hard-coding for now...
 
             var templateManager = new TemplateEngine();
 
             var valType = value == null ? null : value.GetType();
 
-            var currentTemplate = templateManager.CreateTemplateForType(valType, razorTemplate);
+            var currentTemplate = templateManager.CreateTemplateForType(valType, _template);
 
             // set the model for the template
             currentTemplate.Model = value;
