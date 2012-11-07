@@ -4,6 +4,8 @@ using RestBugs.Services.Formatters;
 using RestBugs.Services.Model;
 using RestBugs.Services.Infrastructure;
 using System.Web.Http.Controllers;
+using System.Net.Http.Headers;
+using System.Collections.Generic;
 
 namespace RestBugs.Services
 {
@@ -12,8 +14,9 @@ namespace RestBugs.Services
         public static void Configure(HttpConfiguration config) {
 
             config.Routes.MapHttpRoute("def", "bugs/{controller}", new {controller = "Index"});
-          
-            config.Formatters.Add(new RazorHtmlMediaTypeFormatter());
+            config.Formatters.Insert(0, new RazorMediaTypeFormatter<IEnumerable<BugDTO>>("bugs-all-json", new MediaTypeHeaderValue("application/json"), new MediaTypeHeaderValue("text/json")));
+            config.Formatters.Add(new RazorMediaTypeFormatter<IEnumerable<BugDTO>>("bugs-all", new MediaTypeHeaderValue("text/html")));
+
             //config.MessageHandlers.Add(new EtagMessageHandler());
 
             var kernel = new StandardKernel();
