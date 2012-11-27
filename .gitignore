@@ -8,3 +8,5 @@ Bin/
 App_Data/
 *.svclog
 _ReSharper*
+Packages/
+packages/
