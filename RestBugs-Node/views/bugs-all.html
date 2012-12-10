@@ -5,12 +5,12 @@
     <body>
         <h1></h1>
         <div id="bugs">
-            <% if(typeof(model) != 'undefined') { %>
+            <% if(typeof(model) != 'undefined' && model.bugs) { %>
             
                 <ul class="all">
                     <% 
-                        for(var i=0; i < model.length; i++) { 
-                            var bug = model[i];
+                        for(var i=0; i < model.bugs.length; i++) { 
+                            var bug = model.bugs[i];
                     %>
 
                         <li>
