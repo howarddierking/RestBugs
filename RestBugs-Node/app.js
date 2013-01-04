@@ -68,7 +68,6 @@ app.get('/bugs', function(req, res){
 
 app.get('/bugs/backlog', function(req, res){
 	db.bugs.find({status: 'Backlog'}, function(err, docs) {
-		debugger;
 		res.render('bugs-all.html', { 
 			title: "Backlog", 
 			model: docs 
