@@ -10,3 +10,4 @@ App_Data/
 _ReSharper*
 Packages/
 packages/
+*.dll

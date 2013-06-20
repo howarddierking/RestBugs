@@ -70,8 +70,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoMapperConfig.cs" />
+    <Compile Include="Formatters\RazorMediaTypeFormatter_Of_T.cs" />
     <Compile Include="Infrastructure\DebuggingExceptionFilter.cs" />
-    <Compile Include="Formatters\RazorHtmlMediaTypeFormatter.cs" />
     <Compile Include="Infrastructure\MvcActionValueBinder.cs" />
     <Compile Include="Infrastructure\TemplateBase.cs" />
     <Compile Include="Infrastructure\TemplateEngine.cs" />
@@ -95,6 +95,9 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Templates\bugs-all.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\bugs-all-json.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

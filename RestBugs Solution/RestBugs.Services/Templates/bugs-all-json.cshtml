@@ -1,0 +1,81 @@
+﻿@using RestBugs.Services.Model
+{
+  "bugs" : [
+@if (Model != null)
+{
+  foreach (BugDTO bug in Model)
+  {
+    @:{
+    @:  "title" : "@bug.Title",
+    @:  "description" : "@bug.Description",
+    @:  "assignedTo" : "@bug.AssignedTo",
+    @:  "forms" : [
+    if (@bug.Status == "Backlog")
+    {
+    @:    {
+    @:      "type" : "move to working",
+    @:      "href" : "/bugs/working",
+    @:      "template" : "id=@bug.Id{&comments}",
+    @:      "method" : "POST",
+    @:    }
+    }
+    if (@bug.Status == "Working")
+    {
+    @:    {
+    @:      "type" : "move to backlog",
+    @:      "href" : "/bugs/backlog",
+    @:      "template" : "id=@bug.Id{&comments}",
+    @:      "method" : "POST",
+    @:    },
+    @:    {
+    @:      "type" : "move qa next",
+    @:      "href" : "/bugs/qa",
+    @:      "template" : "id=@bug.Id{&comments}",
+    @:      "method" : "POST",
+    @:    }
+    }
+    if (@bug.Status == "Done")
+    {
+    @:    {
+    @:      "type" : "move working",
+    @:      "href" : "/bugs/working?id=@bug.Id{&comments}",
+    @:      "method" : "POST",
+    @:    }
+    }
+    if (@bug.Status == "QA")
+    {
+    @:    {
+    @:      "type" : "move done next",
+    @:      "href" : "/bugs/done",
+    @:      "template" : "id=@bug.Id{&comments}",
+    @:      "method" : "POST",
+    @:    },
+    @:    {
+    @:      "type" : "move working",
+    @:      "href" : "/bugs/working",
+    @:      "template" : "id=@bug.Id{&comments}",
+    @:      "method" : "POST",
+    @:    }
+    }
+  @:    ]
+  @:  },
+  }
+}
+  ],
+  "forms" : [ 
+  {
+    "type" : "new backlog",
+    "href" : "/bugs/backlog{?title,description}",
+    "template" : "{&title,description}",
+    "method" : "POST",
+  }   
+  ],
+"links" : [
+    { "href" : "http://restbugs.com/profile/restbugs+json", rel : "profile" },
+    { "href" : "/bugs", rel : "index" },
+    { "href" : "/bugs/backlog", rel : "backlog" },
+    { "href" : "/bugs/working", rel : "working" },
+    { "href" : "/bugs/qa", rel: "qa" },
+    { "href" : "/bugs/done", rel: "done"} 
+  ] 
+}       
