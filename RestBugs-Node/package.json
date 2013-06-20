@@ -1,0 +1,14 @@
+{
+  "name": "RestBugs-Node",
+  "version": "0.0.0",
+  "description": "Hypermedia bug tracker",
+  "main": "app.js",
+  "dependencies": {
+    "mongojs": "~0.4.6",
+    "express": "~3.2.6",
+    "ejs": "~0.8.4"
+  },
+  "devDependencies": {},
+  "author": "Howard Dierking",
+  "license": "Apache 2"
+}
