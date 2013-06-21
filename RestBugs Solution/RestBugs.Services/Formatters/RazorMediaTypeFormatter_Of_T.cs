@@ -32,8 +32,6 @@ namespace RestBugs.Services.Formatters
 
         void WriteStream(object value, Stream stream)
         {
-            //const string razorTemplate = "bugs-all"; //hard-coding for now...
-
             var templateManager = new TemplateEngine();
 
             var valType = value == null ? null : value.GetType();
@@ -44,11 +42,9 @@ namespace RestBugs.Services.Formatters
             currentTemplate.Model = value;
             currentTemplate.Execute();
 
-            //using (var streamWriter = new StreamWriter(stream)) {
             var streamWriter = new StreamWriter(stream);
             streamWriter.Write(currentTemplate.Buffer.ToString());
             streamWriter.Flush();
-            //}
 
             currentTemplate.Buffer.Clear();
         }

@@ -13,7 +13,7 @@ namespace RestBugs.Services
     {
         public static void Configure(HttpConfiguration config) {
 
-            config.Routes.MapHttpRoute("def", "bugs/{controller}", new { controller = "Index" });
+            config.Routes.MapHttpRoute("def", "bugs/{controller}", new { controller = "Backlog" });
             config.Formatters.Insert(0, new RazorMediaTypeFormatter<IEnumerable<BugDTO>>("bugs-all-json", new MediaTypeHeaderValue("application/json"), new MediaTypeHeaderValue("text/json")));
             config.Formatters.Add(new RazorMediaTypeFormatter<IEnumerable<BugDTO>>("bugs-all", new MediaTypeHeaderValue("text/html")));
 
