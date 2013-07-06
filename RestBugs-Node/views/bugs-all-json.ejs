@@ -1,0 +1,75 @@
+{
+    "bugs" : [ <%
+   if (typeof(model) != 'undefined') { 
+    for(var i=0; i < model.length; i++) { 
+        var bug = model[i]; %>
+        {
+            "title" : "<%= bug.title %>",
+            "description" : "<%= bug.description %>",
+            "assignedTo" : "<%= bug.assignedTo %>",
+            "forms" : [ <%
+       if (bug.status == "Backlog") { %>
+                {
+                    "type" : "move to working",
+                    "href" : "/bugs/working",
+                    "template" : "id=<%=bug._id %>{&comments}",
+                    "method" : "POST",
+                } <%
+       } 
+       if (bug.status == "Working") { %>
+                {
+                    "type" : "move to backlog",
+                    "href" : "/bugs/backlog",
+                    "template" : "id=<%=bug._id %>{&comments}",
+                    "method" : "POST",
+                },
+                {
+                    "type" : "move qa next",
+                    "href" : "/bugs/qa",
+                    "template" : "id=<%=bug._id %>{&comments}",
+                    "method" : "POST",
+                } <%
+       } 
+       if (bug.status == "Done") { %>
+                {
+                    "type" : "move working",
+                    "href" : "/bugs/working?id=<%=bug._id %>{&comments}",
+                    "method" : "POST",
+                } <%
+       }
+       if (bug.status == "QA") { %>
+                {
+                    "type" : "move done next",
+                    "href" : "/bugs/done",
+                    "template" : "id=<%=bug._id %>{&comments}",
+                    "method" : "POST",
+                },
+                {
+                    "type" : "move working",
+                    "href" : "/bugs/working",
+                    "template" : "id=<%=bug._id %>{&comments}",
+                    "method" : "POST",
+                } <%
+       } 
+    } %>
+            ]
+        }, <%
+   } %>
+    ],
+    "forms" : [ 
+        {
+            "type" : "new backlog",
+            "href" : "/bugs/backlog{?title,description}",
+            "template" : "{&title,description}",
+            "method" : "POST",
+        }   
+    ],
+    "links" : [
+        { "href" : "http://restbugs.com/profile/restbugs+json", rel : "profile" },
+        { "href" : "/bugs", rel : "index" },
+        { "href" : "/bugs/backlog", rel : "backlog" },
+        { "href" : "/bugs/working", rel : "working" },
+        { "href" : "/bugs/qa", rel: "qa" },
+        { "href" : "/bugs/done", rel: "done" } 
+    ] 
+}       

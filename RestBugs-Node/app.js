@@ -1,21 +1,23 @@
 /*Setup*/
 var express = require('express');
-
 var databaseUrl = "restbugs";
 var collections = ["bugs"];
 var mongo = require('mongojs');
 var db = mongo.connect(databaseUrl, collections);
+var util = require('util');
+var http = require('http');
 
-var app = express.createServer();
-app.listen(9200);
+var app = express();
 
-app.configure(function(){
-	app.register('.html', require('ejs'));
-	app.set('view options', {
-		layout: false
-	});
-	app.use(express.bodyParser());	//where is app.use defined and what does it do??
+app.set('port', process.env.PORT || 3000);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');	
+app.set('view options', {
+	layout: false
 });
+app.use(express.bodyParser());	//where is app.use defined and what does it do??
+app.use(app.router);
+
 
 /*Helper functions*/
 
@@ -60,19 +62,33 @@ function newbug(title, description){
 	return bug;
 };
 
+function renderView(res, title, model) {
+	res.format({
+		'html': function() {
+			res.render('bugs-all-html', { 
+				title: title, 
+				model: model 
+			});				
+		},
+
+		'json': function() {
+			res.render('bugs-all-json', { 
+				title: title, 
+				model: model 
+			});				
+		}
+	});
+}
+
 /*API Surface*/
 
 app.get('/bugs', function(req, res){
-	res.render('bugs-all.html', { title: "Bugs API root"});
+	renderView(res, "Bugs API root");
 });
 
 app.get('/bugs/backlog', function(req, res){
 	db.bugs.find({status: 'Backlog'}, function(err, docs) {
-		debugger;
-		res.render('bugs-all.html', { 
-			title: "Backlog", 
-			model: docs 
-		});	
+		renderView(res, 'Backlog', docs);
 	});
 });
 
@@ -83,10 +99,7 @@ app.post('/bugs/backlog', function(req, res){
 			newbug(req.body.title, req.body.description), 
 			function(err, savedDoc) {
 				db.bugs.find( {status: 'Backlog'}, function(err, docs) {
-					res.render('bugs-all.html', {
-						title: 'Backlog',
-						model: docs
-					});
+					renderView(res, 'Backlog', docs);
 				});
 		});
 	} else {
@@ -97,10 +110,7 @@ app.post('/bugs/backlog', function(req, res){
 
 			db.bugs.update( {_id: mongo.ObjectId(req.body.id) }, doc, function(err, updatedDoc){
 				db.bugs.find({status:'Backlog'}, function(err, docs){
-					res.render('bugs-all.html', { 
-						title: "Backlog", 
-						model: docs 
-					});	
+					renderView(res, 'Backlog', docs);
 				});
 			});
 		});
@@ -109,10 +119,7 @@ app.post('/bugs/backlog', function(req, res){
 
 app.get('/bugs/working', function(req, res){
 	db.bugs.find({status:'Working'}, function(err, docs){
-		res.render('bugs-all.html', { 
-			title: "Working", 
-			model: docs 
-		});	
+		renderView(res, 'Working', docs);
 	});
 });
 
@@ -124,21 +131,16 @@ app.post('/bugs/working', function(req, res){
 
 		db.bugs.update( {_id: mongo.ObjectId(req.body.id) }, doc, function(err, updatedDoc){
 			db.bugs.find({status:'Working'}, function(err, docs){
-				res.render('bugs-all.html', { 
-					title: "Working", 
-					model: docs 
-				});	
+				renderView(res, 'Working', docs);
 			});
 		});
 	});
 });
 
+
 app.get('/bugs/qa', function(req, res){
 	db.bugs.find({status:'QA'}, function(err, docs){
-		res.render('bugs-all.html', { 
-			title: "QA", 
-			model: docs 
-		});	
+		renderView(res, 'QA', docs);
 	});
 });
 
@@ -150,10 +152,7 @@ app.post('/bugs/qa', function(req, res){
 
 		db.bugs.update( {_id: mongo.ObjectId(req.body.id) }, doc, function(err, updatedDoc){
 			db.bugs.find({status:'QA'}, function(err, docs){
-				res.render('bugs-all.html', { 
-					title: "QA", 
-					model: docs 
-				});	
+				renderView(res, 'QA', docs);
 			});
 		});
 	});
@@ -161,10 +160,7 @@ app.post('/bugs/qa', function(req, res){
 
 app.get('/bugs/done', function(req, res){
 	db.bugs.find({status:'Done'}, function(err, docs){
-		res.render('bugs-all.html', { 
-			title: "Done", 
-			model: docs 
-		});	
+		renderView(res, 'Done', docs);
 	});
 });
 
@@ -176,10 +172,7 @@ app.post('/bugs/done', function(req, res){
 
 		db.bugs.update( {_id: mongo.ObjectId(req.body.id) }, doc, function(err, updatedDoc){
 			db.bugs.find({status:'Done'}, function(err, docs){
-				res.render('bugs-all.html', { 
-					title: "Done", 
-					model: docs 
-				});	
+				renderView(res, 'Done', docs);
 			});
 		});
 	});
@@ -187,3 +180,7 @@ app.post('/bugs/done', function(req, res){
 
 /*first, let's remove any initial values in the database*/
 db.bugs.remove({});
+
+http.createServer(app).listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});
