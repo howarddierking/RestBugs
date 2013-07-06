@@ -11,3 +11,5 @@ _ReSharper*
 Packages/
 packages/
 .DS_Store
+*.dll
+node_modules
