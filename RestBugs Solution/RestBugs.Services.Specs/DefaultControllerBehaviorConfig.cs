@@ -24,8 +24,6 @@ namespace RestBugs.Services.Specs
                                       fakeAccessor.The<IBugRepository>()
                                           .WhenToldTo(r => r.GetAll())
                                           .Return(BugHelper.TestBugList);
-
-
                                   };
     }
 }

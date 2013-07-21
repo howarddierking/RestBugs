@@ -1,9 +1,9 @@
 ﻿@using RestBugs.Services.Model
 {
   "bugs" : [
-@if (Model != null)
+@if (Model.ModelState == BugsModelState.Collection)
 {
-  foreach (BugDTO bug in Model)
+  foreach (BugDTO bug in Model.Bugs)
   {
     @:{
     @:  "title" : "@bug.Title",

@@ -7,10 +7,10 @@
     <body>
         <h1>Welcome to the RESTBugs HTML Media Type Sample!</h1>
         <div id="bugs">
-            @if (Model != null)
+            @if (Model.ModelState == BugsModelState.Collection)
             {
                 <ul class="all">
-                    @foreach (BugDTO bug in Model)
+                    @foreach (BugDTO bug in Model.Bugs)
                     {
                         <li>
                             Title: <span class="title">@bug.Title</span>
@@ -64,7 +64,7 @@
             }
         </div>
         <div id="forms">
-            @if (Model == null) {
+            @if (Model.ModelState == BugsModelState.Home) {
                 <h2>Add a new bug!</h2>
                 <form class="new backlog" action="/bugs/backlog" method="POST" title="Add a new bug" >
                     Title: <input name="title" type="text" value=""/>

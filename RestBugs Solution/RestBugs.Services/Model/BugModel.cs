@@ -2,7 +2,7 @@
 
 namespace RestBugs.Services.Model
 {
-    class BugModel
+    public class BugModel
     {
         private BugModel(){ /* NoOp */}
         public IEnumerable<BugDTO> Bugs { get; set; } 
@@ -18,11 +18,5 @@ namespace RestBugs.Services.Model
         {
             return new BugModel { ModelState = BugsModelState.Collection, Bugs = bugs};
         }
-    }
-
-    public enum BugsModelState
-    {
-        Home,
-        Collection
     }
 }

@@ -14,12 +14,12 @@ namespace RestBugs.Services.Specs
     {
         Establish context = () => With(new DefaultControllerBehaviorConfig(Subject));
 
-        Because of = () => Subject.Get().TryGetContentValue(out resolvedBugs);
+        Because of = () => Subject.Get().TryGetContentValue(out model);
 
-        It should_not_be_null = () => resolvedBugs.ShouldNotBeNull();
+        It should_not_be_null = () => model.Bugs.ShouldNotBeNull();
 
-        It should_return_1_bug = () => resolvedBugs.Count().ShouldEqual(1);
+        It should_return_1_bug = () => model.Bugs.Count().ShouldEqual(1);
 
-        static IEnumerable<BugDTO> resolvedBugs;
+        static BugModel model;
     }
 }

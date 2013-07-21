@@ -83,6 +83,7 @@
     <Compile Include="Model\Bug.cs" />
     <Compile Include="Model\BugDTO.cs" />
     <Compile Include="Model\BugModel.cs" />
+    <Compile Include="Model\BugsModelState.cs" />
     <Compile Include="Model\BugStatus.cs" />
     <Compile Include="Model\IBugRepository.cs" />
     <Compile Include="Model\StaticBugRepository.cs" />

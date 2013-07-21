@@ -18,7 +18,7 @@ namespace RestBugs.Services.Services
 
         public HttpResponseMessage Get()
         {
-            var response = Request.CreateResponse<IEnumerable<BugDTO>>(HttpStatusCode.OK, GetResolvedDtos());
+            var response = Request.CreateResponse(HttpStatusCode.OK, BugModel.Collection(GetResolvedDtos()));
             return response;
         }
 
@@ -37,7 +37,7 @@ namespace RestBugs.Services.Services
 
             bug.Resolve(comments);
 
-            var response = Request.CreateResponse<IEnumerable<BugDTO>>(HttpStatusCode.OK, GetResolvedDtos());
+            var response = Request.CreateResponse(HttpStatusCode.OK, BugModel.Collection(GetResolvedDtos()));
             return response;
         }
     }

@@ -19,10 +19,10 @@ namespace RestBugs.Services.Services
         }
 
         public HttpResponseMessage Get() {
-            var response = Request.CreateResponse(HttpStatusCode.OK, GetBacklogBugDtos());
+            var response = Request.CreateResponse(HttpStatusCode.OK, BugModel.Collection(GetBacklogBugDtos()));
 
             var n = Configuration.Services.GetContentNegotiator();
-            var n_res = n.Negotiate(typeof(IEnumerable<BugDTO>), Request, Configuration.Formatters);
+            n.Negotiate(typeof(BugModel), Request, Configuration.Formatters);
 
             return response;
         }
@@ -43,7 +43,7 @@ namespace RestBugs.Services.Services
                 if (bug == null)
                     return new HttpResponseMessage(HttpStatusCode.NotFound);
                 bug.Approve();
-                return Request.CreateResponse(HttpStatusCode.OK, GetBacklogBugDtos());
+                return Request.CreateResponse(HttpStatusCode.OK, BugModel.Collection(GetBacklogBugDtos()));
             }
 
             bug = Mapper.Map<BugDTO, Bug>(dto);
@@ -51,7 +51,7 @@ namespace RestBugs.Services.Services
 
             _bugsRepository.Add(bug);
             
-            var response = Request.CreateResponse(HttpStatusCode.Created, GetBacklogBugDtos());
+            var response = Request.CreateResponse(HttpStatusCode.Created, BugModel.Collection(GetBacklogBugDtos()));
             
             //i still don't like this because it's fragmenting management of my links
             response.Headers.Location = new Uri(HostUriFromRequest(Request), bug.Id.ToString(CultureInfo.InvariantCulture));

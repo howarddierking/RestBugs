@@ -23,15 +23,15 @@ namespace RestBugs.Services.Specs
                                 };
                             };
 
-        Because of = () => Subject.Get().TryGetContentValue(out workingBugs);
+        Because of = () => Subject.Get().TryGetContentValue(out model);
 
-        It should_not_be_null = () => workingBugs.ShouldNotBeNull();
+        It should_not_be_null = () => model.Bugs.ShouldNotBeNull();
 
-        It should_return_3_bugs = () => workingBugs.Count().ShouldEqual(3);
+        It should_return_3_bugs = () => model.Bugs.Count().ShouldEqual(3);
 
-        It should_sort_bugs_in_order_of_priority_then_rank = () => workingBugs.ShouldEqual(expectedResult);
+        It should_sort_bugs_in_order_of_priority_then_rank = () => model.Bugs.ShouldEqual(expectedResult);
 
-        static IEnumerable<BugDTO> workingBugs;
+        static BugModel model;
         static IEnumerable<BugDTO> expectedResult;
     }
 
@@ -54,21 +54,21 @@ namespace RestBugs.Services.Specs
 
         Because of = () => {
                          responseMessage = Subject.Post(1, "activating bug 1");
-                         result = responseMessage.TryGetContentValue(out resultContent);
+                         result = responseMessage.TryGetContentValue(out model);
                      };
 
         It should_succeed_in_getting_result_content = () => result.ShouldBeTrue();
 
         It should_not_be_null_result = () => responseMessage.ShouldNotBeNull();
 
-        It should_not_be_null_result_content = () => resultContent.ShouldNotBeNull();
+        It should_not_be_null_result_content = () => model.Bugs.ShouldNotBeNull();
 
-        It should_have_1_bug_in_it = () => resultContent.Count().ShouldEqual(1);
+        It should_have_1_bug_in_it = () => model.Bugs.Count().ShouldEqual(1);
 
-        It should_contain_a_bug_with_id_1 = () => resultContent.First().Id.ShouldEqual(1);
+        It should_contain_a_bug_with_id_1 = () => model.Bugs.First().Id.ShouldEqual(1);
 
         static HttpResponseMessage responseMessage;
-        static IEnumerable<BugDTO> resultContent;
+        static BugModel model;
         static bool result;
     }
 

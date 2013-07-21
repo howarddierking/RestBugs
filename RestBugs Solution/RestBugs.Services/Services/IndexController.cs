@@ -7,10 +7,9 @@ namespace RestBugs.Services.Services
 {
     public class IndexController : ApiController
     {
-        public object Get() {
+        public BugModel Get() {
             Trace.WriteLine("HIT");
-            return new List<BugDTO>();
-            return null;
+            return BugModel.Home();
         }
     }
 }
