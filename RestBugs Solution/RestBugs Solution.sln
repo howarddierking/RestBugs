@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{56BB86
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestBugs.KatanaHost", "RestBugs.KatanaHost\RestBugs.KatanaHost.csproj", "{701EA0B2-5BBD-45E8-9E74-68F08DC4D87F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestBugs.NodeHost", "RestBugs.NodeHost\RestBugs.NodeHost.csproj", "{189F3150-2444-477C-86BD-4C35F0512261}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CodeCoverage|Any CPU = CodeCoverage|Any CPU
@@ -134,6 +136,21 @@ Global
 		{701EA0B2-5BBD-45E8-9E74-68F08DC4D87F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{701EA0B2-5BBD-45E8-9E74-68F08DC4D87F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{701EA0B2-5BBD-45E8-9E74-68F08DC4D87F}.Release|x86.ActiveCfg = Release|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.CodeCoverage|Any CPU.ActiveCfg = Release|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.CodeCoverage|Any CPU.Build.0 = Release|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.CodeCoverage|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.CodeCoverage|Mixed Platforms.Build.0 = Release|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.CodeCoverage|x86.ActiveCfg = Release|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.Release|Any CPU.Build.0 = Release|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{189F3150-2444-477C-86BD-4C35F0512261}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -144,6 +161,7 @@ Global
 		{54DCBF6E-EE50-426E-B12F-33DAB81E1074} = {E3552BDA-0A81-45C8-A4B5-9B53186A50B5}
 		{CF73DB1A-7B19-45D4-AE27-0BE66AB58DB5} = {E3552BDA-0A81-45C8-A4B5-9B53186A50B5}
 		{701EA0B2-5BBD-45E8-9E74-68F08DC4D87F} = {E3552BDA-0A81-45C8-A4B5-9B53186A50B5}
+		{189F3150-2444-477C-86BD-4C35F0512261} = {E3552BDA-0A81-45C8-A4B5-9B53186A50B5}
 		{0777C6CB-7F07-4A09-BF0A-A7FF8028F48E} = {1D58AEC4-0707-4F73-8F02-8823578FC39D}
 	EndGlobalSection
 EndGlobal
