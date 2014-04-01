@@ -21,7 +21,7 @@
                             <% if(bug.status == "Backlog") { %>
 
                             <form class="move working next" action="/bugs/working" method="POST" title="Move to Working" >
-                                <input name="id" type="hidden" value="<%= bug._id %>"/>
+                                <input name="id" type="hidden" value="<%= bug._id.toString() %>"/>
                                 <input name="comments" type="text" value=""/>
                                 <input name="submit" type="submit" value="Move to Working"/>
                             </form>
@@ -32,12 +32,12 @@
                             <% if(bug.status == "Working") { %>
 
                             <form class="move backlog" action="/bugs/backlog" method="POST" title="Move to Backlog" >
-                                <input name="id" type="hidden" value="<%= bug._id %>"/>
+                                <input name="id" type="hidden" value="<%= bug._id.toString() %>"/>
                                 <input name="comments" type="text" value=""/>
                                 <input name="submit" type="submit" value="Move to Backlog"/>
                             </form>
                             <form class="move qa next" action="/bugs/qa" method="POST" title="Move to QA" >
-                                <input name="id" type="hidden" value="<%= bug._id %>"/>
+                                <input name="id" type="hidden" value="<%= bug._id.toString() %>"/>
                                 <input name="comments" type="text" value=""/>
                                 <input name="submit" type="submit" value="Move to QA"/>
                             </form>
@@ -47,7 +47,7 @@
                             <% if(bug.status == "Done") { %>
                             
                             <form class="move working" action="/bugs/working" method="POST" title="Move to Working" >
-                                <input name="id" type="hidden" value="<%= bug._id %>"/>
+                                <input name="id" type="hidden" value="<%= bug._id.toString() %>"/>
                                 <input name="comments" type="text" value=""/>
                                 <input name="submit" type="submit" value="Move to Working"/>
                             </form>
@@ -57,12 +57,12 @@
                             <% if(bug.status == "QA") { %>
 
                             <form class="move done next" action="/bugs/done" method="POST" title="Move to Done" >
-                                <input name="id" type="hidden" value="<%= bug._id %>"/>
+                                <input name="id" type="hidden" value="<%= bug._id.toString() %>"/>
                                 <input name="comments" type="text" value=""/>
                                 <input name="submit" type="submit" value="Move to Done"/>
                             </form>
                             <form class="move working" action="/bugs/working" method="POST" title="Move to Working" >
-                                <input name="id" type="hidden" value="<%= bug._id %>"/>
+                                <input name="id" type="hidden" value="<%= bug._id.toString() %>"/>
                                 <input name="comments" type="text" value=""/>
                                 <input name="submit" type="submit" value="Move to Working"/>
                             </form>

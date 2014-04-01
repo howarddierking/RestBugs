@@ -12,7 +12,7 @@
                 {
                     "type" : "move to working",
                     "href" : "/bugs/working",
-                    "template" : "id=<%=bug._id %>{&comments}",
+                    "template" : "id=<%=bug._id.toString() %>{&comments}",
                     "method" : "POST",
                 } <%
        } 
@@ -20,20 +20,20 @@
                 {
                     "type" : "move to backlog",
                     "href" : "/bugs/backlog",
-                    "template" : "id=<%=bug._id %>{&comments}",
+                    "template" : "id=<%=bug._id.toString() %>{&comments}",
                     "method" : "POST",
                 },
                 {
                     "type" : "move qa next",
                     "href" : "/bugs/qa",
-                    "template" : "id=<%=bug._id %>{&comments}",
+                    "template" : "id=<%=bug._id.toString() %>{&comments}",
                     "method" : "POST",
                 } <%
        } 
        if (bug.status == "Done") { %>
                 {
                     "type" : "move working",
-                    "href" : "/bugs/working?id=<%=bug._id %>{&comments}",
+                    "href" : "/bugs/working?id=<%=bug._id.toString() %>{&comments}",
                     "method" : "POST",
                 } <%
        }
@@ -41,13 +41,13 @@
                 {
                     "type" : "move done next",
                     "href" : "/bugs/done",
-                    "template" : "id=<%=bug._id %>{&comments}",
+                    "template" : "id=<%=bug._id.toString() %>{&comments}",
                     "method" : "POST",
                 },
                 {
                     "type" : "move working",
                     "href" : "/bugs/working",
-                    "template" : "id=<%=bug._id %>{&comments}",
+                    "template" : "id=<%=bug._id.toString() %>{&comments}",
                     "method" : "POST",
                 } <%
        } 
