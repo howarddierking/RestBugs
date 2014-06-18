@@ -1,9 +1,9 @@
 {
-    "index": "<%=toAbsoluteUrl('/bugs')%>",
-    "backlog": "<%=toAbsoluteUrl('/bugs/backlog')%>",
-    "working": "<%=toAbsoluteUrl('/bugs/working')%>",
-    "qa": "<%=toAbsoluteUrl('/bugs/qa')%>",
-    "done": "<%=toAbsoluteUrl('/bugs/done')%>",
+    "index": "<%=toAbsoluteUrl('/bugs',formatExtension)%>",
+    "backlog": "<%=toAbsoluteUrl('/bugs/backlog',formatExtension)%>",
+    "working": "<%=toAbsoluteUrl('/bugs/working',formatExtension)%>",
+    "qa": "<%=toAbsoluteUrl('/bugs/qa',formatExtension)%>",
+    "done": "<%=toAbsoluteUrl('/bugs/done',formatExtension)%>",
     <% if(model && model.length > 0){ %>
     "bugs": [
         <% model.forEach(function(bug, index){ %>{
@@ -12,7 +12,7 @@
             "assignedTo": "<%= bug.assignedTo %>"
             <% if(bug.status === 'Backlog'){ %> 
             ,"move_working": {
-                "href": "<%=toAbsoluteUrl('/bugs/working')%>",
+                "href": "<%=toAbsoluteUrl('/bugs/working',formatExtension)%>",
                 "method": "POST",
                 "content-type": "application/x-www-form-urlencoded",
                 "parameters": [{"id": "<%=bug._id.toHexString()%>"}, "comments"]
@@ -20,13 +20,13 @@
             <% } %>
             <% if(bug.status === 'Working'){ %> 
             ,"move_backlog": {
-                "href": "<%=toAbsoluteUrl('/bugs/backlog')%>",
+                "href": "<%=toAbsoluteUrl('/bugs/backlog',formatExtension)%>",
                 "method": "POST",
                 "content-type": "application/x-www-form-urlencoded",
                 "parameters": [{"id": "<%=bug._id.toHexString()%>"}, "comments"]
             }
             ,"move_qa": {
-                "href": "<%=toAbsoluteUrl('/bugs/qa')%>",
+                "href": "<%=toAbsoluteUrl('/bugs/qa',formatExtension)%>",
                 "method": "POST",
                 "content-type": "application/x-www-form-urlencoded",
                 "parameters": [{"id": "<%=bug._id.toHexString()%>"}, "comments"]
@@ -34,13 +34,13 @@
             <% } %>
             <% if(bug.status === 'QA'){ %> 
             ,"move_working": {
-                "href": "<%=toAbsoluteUrl('/bugs/working')%>",
+                "href": "<%=toAbsoluteUrl('/bugs/working',formatExtension)%>",
                 "method": "POST",
                 "content-type": "application/x-www-form-urlencoded",
                 "parameters": [{"id": "<%=bug._id.toHexString()%>"}, "comments"]
             }
             ,"move_done": {
-                "href": "<%=toAbsoluteUrl('/bugs/done')%>",
+                "href": "<%=toAbsoluteUrl('/bugs/done',formatExtension)%>",
                 "method": "POST",
                 "content-type": "application/x-www-form-urlencoded",
                 "parameters": [{"id": "<%=bug._id.toHexString()%>"}, "comments"]
@@ -48,7 +48,7 @@
             <% } %>
             <% if(bug.status === 'Done'){ %> 
             ,"move_working": {
-                "href": "<%=toAbsoluteUrl('/bugs/working')%>",
+                "href": "<%=toAbsoluteUrl('/bugs/working',formatExtension)%>",
                 "method": "POST",
                 "content-type": "application/x-www-form-urlencoded",
                 "parameters": [{"id": "<%=bug._id.toHexString()%>"}, "comments"]
@@ -59,7 +59,7 @@
     <% } %>
     <% if(title==='Index'){ %>
     "create_bug": {
-        "href": "<%=toAbsoluteUrl('/bugs/backlog')%>",
+        "href": "<%=toAbsoluteUrl('/bugs/backlog',formatExtension)%>",
         "method": "POST",
         "content-type": "application/x-www-form-urlencoded",
         "parameters": ["title", "description"]
