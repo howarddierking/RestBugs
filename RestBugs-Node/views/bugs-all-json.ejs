@@ -1,75 +1,68 @@
 {
-    "bugs" : [ <%
-   if (typeof(model) != 'undefined') { 
-    for(var i=0; i < model.length; i++) { 
-        var bug = model[i]; %>
-        {
-            "title" : "<%= bug.title %>",
-            "description" : "<%= bug.description %>",
-            "assignedTo" : "<%= bug.assignedTo %>",
-            "forms" : [ <%
-       if (bug.status == "Backlog") { %>
-                {
-                    "type" : "move to working",
-                    "href" : "/bugs/working",
-                    "template" : "id=<%=bug._id.toString() %>{&comments}",
-                    "method" : "POST",
-                } <%
-       } 
-       if (bug.status == "Working") { %>
-                {
-                    "type" : "move to backlog",
-                    "href" : "/bugs/backlog",
-                    "template" : "id=<%=bug._id.toString() %>{&comments}",
-                    "method" : "POST",
-                },
-                {
-                    "type" : "move qa next",
-                    "href" : "/bugs/qa",
-                    "template" : "id=<%=bug._id.toString() %>{&comments}",
-                    "method" : "POST",
-                } <%
-       } 
-       if (bug.status == "Done") { %>
-                {
-                    "type" : "move working",
-                    "href" : "/bugs/working?id=<%=bug._id.toString() %>{&comments}",
-                    "method" : "POST",
-                } <%
-       }
-       if (bug.status == "QA") { %>
-                {
-                    "type" : "move done next",
-                    "href" : "/bugs/done",
-                    "template" : "id=<%=bug._id.toString() %>{&comments}",
-                    "method" : "POST",
-                },
-                {
-                    "type" : "move working",
-                    "href" : "/bugs/working",
-                    "template" : "id=<%=bug._id.toString() %>{&comments}",
-                    "method" : "POST",
-                } <%
-       } 
-    } %>
-            ]
-        }, <%
-   } %>
-    ],
-    "forms" : [ 
-        {
-            "type" : "new backlog",
-            "href" : "/bugs/backlog{?title,description}",
-            "template" : "{&title,description}",
-            "method" : "POST",
-        }   
-    ],
-    "links" : [
-        { "href" : "http://restbugs.com/profile/restbugs+json", rel : "profile" },
-        { "href" : "/bugs", rel : "index" },
-        { "href" : "/bugs/backlog", rel : "backlog" },
-        { "href" : "/bugs/working", rel : "working" },
-        { "href" : "/bugs/qa", rel: "qa" },
-        { "href" : "/bugs/done", rel: "done" } 
-    ] 
+    "index": "<%=toAbsoluteUrl('/bugs')%>",
+    "backlog": "<%=toAbsoluteUrl('/bugs/backlog')%>",
+    "working": "<%=toAbsoluteUrl('/bugs/working')%>",
+    "qa": "<%=toAbsoluteUrl('/bugs/qa')%>",
+    "done": "<%=toAbsoluteUrl('/bugs/done')%>",
+    <% if(model && model.length > 0){ %>
+    "bugs": [
+        <% model.forEach(function(bug, index){ %>{
+            "title": "<%= bug.title %>",
+            "description": "<%= bug.description %>",
+            "assignedTo": "<%= bug.assignedTo %>"
+            <% if(bug.status === 'Backlog'){ %> 
+            ,"move_working": {
+                "href": "<%=toAbsoluteUrl('/bugs/working')%>",
+                "method": "POST",
+                "content-type": "application/x-www-form-urlencoded",
+                "parameters": [{"id": "<%=bug._id.toHexString()%>"}, "comments"]
+            }
+            <% } %>
+            <% if(bug.status === 'Working'){ %> 
+            ,"move_backlog": {
+                "href": "<%=toAbsoluteUrl('/bugs/backlog')%>",
+                "method": "POST",
+                "content-type": "application/x-www-form-urlencoded",
+                "parameters": [{"id": "<%=bug._id.toHexString()%>"}, "comments"]
+            }
+            ,"move_qa": {
+                "href": "<%=toAbsoluteUrl('/bugs/qa')%>",
+                "method": "POST",
+                "content-type": "application/x-www-form-urlencoded",
+                "parameters": [{"id": "<%=bug._id.toHexString()%>"}, "comments"]
+            }
+            <% } %>
+            <% if(bug.status === 'QA'){ %> 
+            ,"move_working": {
+                "href": "<%=toAbsoluteUrl('/bugs/working')%>",
+                "method": "POST",
+                "content-type": "application/x-www-form-urlencoded",
+                "parameters": [{"id": "<%=bug._id.toHexString()%>"}, "comments"]
+            }
+            ,"move_done": {
+                "href": "<%=toAbsoluteUrl('/bugs/done')%>",
+                "method": "POST",
+                "content-type": "application/x-www-form-urlencoded",
+                "parameters": [{"id": "<%=bug._id.toHexString()%>"}, "comments"]
+            }
+            <% } %>
+            <% if(bug.status === 'Done'){ %> 
+            ,"move_working": {
+                "href": "<%=toAbsoluteUrl('/bugs/working')%>",
+                "method": "POST",
+                "content-type": "application/x-www-form-urlencoded",
+                "parameters": [{"id": "<%=bug._id.toHexString()%>"}, "comments"]
+            }
+            <% } %>
+        }<% if(index !== model.length - 1){ %>,<% } %>
+        <% }) %>]
+    <% } %>
+    <% if(title==='Index'){ %>
+    "create_bug": {
+        "href": "<%=toAbsoluteUrl('/bugs/backlog')%>",
+        "method": "POST",
+        "content-type": "application/x-www-form-urlencoded",
+        "parameters": ["title", "description"]
+    }
+    <% } %>
 }       

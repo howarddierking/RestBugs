@@ -20,8 +20,8 @@
 
                             <% if(bug.status == "Backlog") { %>
 
-                            <form class="move working next" action="/bugs/working" method="POST" title="Move to Working" >
-                                <input name="id" type="hidden" value="<%= bug._id.toString() %>"/>
+                            <form class="move working next" action="<%=toAbsoluteUrl('/bugs/working')%>" method="POST" title="Move to Working" >
+                                <input name="id" type="hidden" value="<%= bug._id.toHexString() %>"/>
                                 <input name="comments" type="text" value=""/>
                                 <input name="submit" type="submit" value="Move to Working"/>
                             </form>
@@ -31,13 +31,13 @@
 
                             <% if(bug.status == "Working") { %>
 
-                            <form class="move backlog" action="/bugs/backlog" method="POST" title="Move to Backlog" >
-                                <input name="id" type="hidden" value="<%= bug._id.toString() %>"/>
+                            <form class="move backlog" action="<%=toAbsoluteUrl('/bugs/backlog')%>" method="POST" title="Move to Backlog" >
+                                <input name="id" type="hidden" value="<%= bug._id.toHexString() %>"/>
                                 <input name="comments" type="text" value=""/>
                                 <input name="submit" type="submit" value="Move to Backlog"/>
                             </form>
-                            <form class="move qa next" action="/bugs/qa" method="POST" title="Move to QA" >
-                                <input name="id" type="hidden" value="<%= bug._id.toString() %>"/>
+                            <form class="move qa next" action="<%=toAbsoluteUrl('/bugs/qa')%>" method="POST" title="Move to QA" >
+                                <input name="id" type="hidden" value="<%= bug._id.toHexString() %>"/>
                                 <input name="comments" type="text" value=""/>
                                 <input name="submit" type="submit" value="Move to QA"/>
                             </form>
@@ -46,8 +46,8 @@
 
                             <% if(bug.status == "Done") { %>
                             
-                            <form class="move working" action="/bugs/working" method="POST" title="Move to Working" >
-                                <input name="id" type="hidden" value="<%= bug._id.toString() %>"/>
+                            <form class="move working" action="<%=toAbsoluteUrl('/bugs/working')%>" method="POST" title="Move to Working" >
+                                <input name="id" type="hidden" value="<%= bug._id.toHexString() %>"/>
                                 <input name="comments" type="text" value=""/>
                                 <input name="submit" type="submit" value="Move to Working"/>
                             </form>
@@ -56,13 +56,13 @@
 
                             <% if(bug.status == "QA") { %>
 
-                            <form class="move done next" action="/bugs/done" method="POST" title="Move to Done" >
-                                <input name="id" type="hidden" value="<%= bug._id.toString() %>"/>
+                            <form class="move done next" action="<%=toAbsoluteUrl('/bugs/done')%>" method="POST" title="Move to Done" >
+                                <input name="id" type="hidden" value="<%= bug._id.toHexString() %>"/>
                                 <input name="comments" type="text" value=""/>
                                 <input name="submit" type="submit" value="Move to Done"/>
                             </form>
-                            <form class="move working" action="/bugs/working" method="POST" title="Move to Working" >
-                                <input name="id" type="hidden" value="<%= bug._id.toString() %>"/>
+                            <form class="move working" action="<%=toAbsoluteUrl('/bugs/working')%>" method="POST" title="Move to Working" >
+                                <input name="id" type="hidden" value="<%= bug._id.toHexString() %>"/>
                                 <input name="comments" type="text" value=""/>
                                 <input name="submit" type="submit" value="Move to Working"/>
                             </form>
@@ -80,7 +80,7 @@
             <% if(typeof(model) == 'undefined') { %>
 
             <h2>Add a new bug!</h2>
-            <form class="new backlog" action="/bugs/backlog" method="POST" title="Add a new bug" >
+            <form class="new backlog" action="<%=toAbsoluteUrl('/bugs/backlog')%>" method="POST" title="Add a new bug" >
                 Title: <input name="title" type="text" value=""/>
                 Description: <input name="description" type="text" value=""/>
                 <input name="submit" type="submit" value="Add to Backlog"/>
@@ -91,11 +91,11 @@
         
         <div id="links">
             <h2>Navigation</h2>
-            <a href="/bugs" rel="index">Index</a><br/>
-            <a href="/bugs/backlog" rel="backlog">Backlog</a><br/>
-            <a href="/bugs/working" rel="working">Working</a><br/>
-            <a href="/bugs/qa" rel="qa">In QA</a><br/>
-            <a href="/bugs/done" rel="done">Done</a>    
+            <a href="<%=toAbsoluteUrl('/bugs')%>" rel="index">Index</a><br/>
+            <a href="<%=toAbsoluteUrl('/bugs/backlog')%>" rel="backlog">Backlog</a><br/>
+            <a href="<%=toAbsoluteUrl('/bugs/working')%>" rel="working">Working</a><br/>
+            <a href="<%=toAbsoluteUrl('/bugs/qa')%>" rel="qa">In QA</a><br/>
+            <a href="<%=toAbsoluteUrl('/bugs/done')%>" rel="done">Done</a>    
         </div>
     </body>
 </html>

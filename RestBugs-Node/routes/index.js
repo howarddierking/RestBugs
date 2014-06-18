@@ -6,26 +6,25 @@ var bugs = require('../lib/bugsdata'),
 	assert = require('assert');
 
 // render helper
-// todo: this should go away as I'm going to standardize the API on JSON-LD to ensure that the client and server are truly separate entities
-
 function renderView(res, title, model) {
+	debugger;
 
-	console.info(util.inspect(res.req.accepted));
+	res.set('Cache-Control', 'no-cache, no-store');
 
+	var viewModel = {
+		title: title,
+		model: model,
+		toAbsoluteUrl: function(rootRelativeUrl){
+			return 'http://' + res.req.headers.host + rootRelativeUrl;
+		}
+	}
 	res.format({
 		'text/html': function() {
-			console.info(util.inspect(model, { colors: true }));
-			res.render('bugs-all-html', { 
-				title: title, 
-				model: model 
-			});				
+			res.render('bugs-all-html', viewModel);				
 		},
 
 		'application/json': function() {
-			res.render('bugs-all-json', { 
-				title: title, 
-				model: model 
-			});				
+			res.render('bugs-all-json', viewModel);				
 		}
 	});
 };
@@ -39,7 +38,7 @@ var listView = function(res, title){
 // routes
 
 exports.index = function(req, res){
-	renderView(res, "Bugs API root");
+	renderView(res, 'Index');
 };
 
 exports.backlog = function(req, res){
@@ -47,6 +46,7 @@ exports.backlog = function(req, res){
 };
 
 exports.backlog_post = function(req, res){
+debugger;
 	var bugID = req.body.id,
 		title = req.body.title,
 		description = req.body.description,
@@ -86,6 +86,9 @@ exports.working_post = function(req, res){
 	bugs.getBug(bugID, function(err, data){
 		if(err)
 			return res.send(500, err);
+
+debugger;
+
 		data.working(comments);
 		bugs.saveBug(data, function(err, data){
 			if(err)

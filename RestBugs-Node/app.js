@@ -13,7 +13,7 @@ app.set('view engine', 'ejs');
 app.set('view options', {
 	layout: false
 });
-app.use(express.bodyParser());	//where is app.use defined and what does it do??
+app.use(express.bodyParser());
 app.use(app.router);
 
 // routes 
