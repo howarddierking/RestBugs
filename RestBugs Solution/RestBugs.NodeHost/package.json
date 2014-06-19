@@ -1,0 +1,8 @@
+﻿{
+    "dependencies": {
+        "connect-owin": "~0.1.0"
+    },
+    "devDependencies": {
+		"express": "~3.4.0"
+    }
+}
